@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Assets.Code.Infrastructure.Unity;
 using Assets.Code.Infrastructure.Controller;
+using Assets.Code.Infrastructure.Sound;
+using Zenject;
 
 namespace Assets.Code
 {
@@ -10,6 +12,7 @@ namespace Assets.Code
     public class GameManager : MonoBehaviourExtension
     {
         private IInputManager inputManager;
+        private ISoundManager soundManager;
         private GameObject instance;
         private GameObject player1;
         private GameObject player2;
@@ -18,19 +21,23 @@ namespace Assets.Code
 
         private List<GameObject> enemies;
 
+        [Inject]
+        private void Inject(IInputManager inputManager, ISoundManager soundManager)
+        {
+            this.inputManager = inputManager;
+            this.soundManager = soundManager;
+        }
+
         void Awake()
         {
-            // Does this need to be changed to use Zenject DI instead of GetComponent?
-            inputManager = this.GetComponentInChildren<IInputManager>();
+           
         }
 
-        // Use this for initialization
         void Start()
         {
-
+            soundManager.PlayLoopingSound("Sound/Music/seiken-powell", "background", 1);
         }
 
-        // Update is called once per frame
         void Update()
         {
 

@@ -8,10 +8,10 @@ namespace Assets.Code.Configuration
     {
         public override void InstallBindings()
         {
-            Container.Bind<IInputManager>().To<InputManager>().AsSingle();
-            Container.Bind<IGameInput>().To<GameInput>().AsTransient();
-            Container.Bind<ISoundManager>().To<SoundManager2D>().AsSingle();
-            Container.Bind<ISoundManager>().To<SoundManager2D>().AsSingle();
+            Container.Bind<GameManager>().AsSingle();
+            Container.Bind<IInputManager>().FromComponentInNewPrefabResource("Prefabs/InputManager").AsSingle();
+            Container.Bind<IGameInput>().To<KeyboardGameInput>().AsTransient();
+            Container.Bind<ISoundManager>().FromComponentInNewPrefabResource("Prefabs/SoundManager").AsSingle();
         }
     }
 }

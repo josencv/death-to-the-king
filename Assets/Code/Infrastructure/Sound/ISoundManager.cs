@@ -7,7 +7,8 @@ namespace Assets.Code.Infrastructure.Sound
         void PlayOneShotSound(AudioClip clip, float volume = 1.0F);
         void PlayOneShotSoundRandom(AudioClip[] list, float volume = 1.0F);
         void StopAllOneShotSounds();
-        void playLoopingSound(AudioClip clip, string soundID, int priority, float volume = 1.0F);
+        void PlayLoopingSound(AudioClip clip, string soundID, int priority, float volume = 1.0F);
+        void PlayLoopingSound(string resourceName, string soundID, int priority, float volume = 1.0F);
         void StopLoopingSound(string soundID);
         void StopAllLoopingSounds();
     }

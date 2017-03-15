@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System;
 using System.Linq;
+using Assets.Code.Infrastructure.Unity;
 
 namespace Assets.Code.Infrastructure.Sound
 {
-    public class SoundManager2D : MonoBehaviour, ISoundManager
+    public class SoundManager2D : MonoBehaviourExtension, ISoundManager
     {
         private const int MaxLoopingSources = 32;
         private const int OneShotPriority = 0;
@@ -107,7 +108,7 @@ namespace Assets.Code.Infrastructure.Sound
         /// <param name="priority">The priority of the Audio Source.  Should
         /// be in the range 1-255.  0 is reserved for one shot sounds.</param>
         /// <param name="volume">The volume of the clip 0.0f to 1.0f.</param>
-        public void playLoopingSound(AudioClip clip, string soundID, int priority, float volume = 1.0F)
+        public void PlayLoopingSound(AudioClip clip, string soundID, int priority, float volume = 1.0F)
         {
             if (priority < 1 || priority > 255)
             {
@@ -134,6 +135,20 @@ namespace Assets.Code.Infrastructure.Sound
 
                 StartLoopingSource(newSource, clip, priority, volume);
             }
+        }
+
+        /// <summary>
+        /// Plays a looping sound by resource path.
+        /// </summary>
+        /// <param name="resourceName">The path of the resource to load</param>
+        /// <param name="soundID">The ID of the looping audio.</param> 
+        /// <param name="priority">The priority of the Audio Source.  Should
+        /// be in the range 1-255.  0 is reserved for one shot sounds.</param>
+        /// <param name="volume">The volume of the clip 0.0f to 1.0f.</param>
+        public void PlayLoopingSound(string resourceName, string soundID, int priority, float volume = 1.0F)
+        {
+            AudioClip clip = (AudioClip)Resources.Load(resourceName, typeof(AudioClip));
+            PlayLoopingSound(clip, soundID, priority, volume);
         }
 
         /// <summary>
