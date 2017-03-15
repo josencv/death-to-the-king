@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Infrastructure.Unity;
+using Zenject;
 
 namespace Assets.Code.Infrastructure.Controller {
 
@@ -9,6 +10,7 @@ namespace Assets.Code.Infrastructure.Controller {
     public class InputManager : MonoBehaviourExtension, IInputManager {
 
         private IGameInput[] gameInputs;
+        private MonoInstaller coreInstaller;    // DI Container
 
         private void InitializeGameInputs() 
         {
@@ -22,8 +24,11 @@ namespace Assets.Code.Infrastructure.Controller {
         {
             foreach (GameInput gameInput in gameInputs)
             {
-                gameInput.UpdateState();
-                gameInput.SendAllSignals();
+                if (gameInput != null)
+                {
+                    gameInput.UpdateState();
+                    gameInput.SendAllSignals();
+                }
             }
         }
 
@@ -31,13 +36,11 @@ namespace Assets.Code.Infrastructure.Controller {
             InitializeGameInputs();
         }
 
-	    // Use this for initialization
 	    protected void Start () {
-        
-	    }
-	
-	    // Update is called once per frame
-	    protected void Update () {
+            coreInstaller = GetComponent<MonoInstaller>();
+        }
+
+        protected void Update () {
             ProcessGameInputs();
 	    }
 
