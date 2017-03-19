@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 
-namespace Assets.Code.Infrastructure.Controller
+namespace Assets.Code.Infrastructure.Input
 {
-
     /// <summary>
     /// This class represents the player game input. It is an abstraction from the actual hardware input used.
     /// </summary>

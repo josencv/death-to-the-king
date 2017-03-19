@@ -1,4 +1,4 @@
-﻿namespace Assets.Code.Infrastructure.Controller
+﻿namespace Assets.Code.Infrastructure.Input
 {
     /// <summary>
     /// Struct to save a pair of GameInputAxis and a value to do the correct mapping

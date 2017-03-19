@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using XboxCtrlrInput;
 
-namespace Assets.Code.Infrastructure.Controller
+namespace Assets.Code.Infrastructure.Input
 {
     public class XboxGameInput : GameInput
     {

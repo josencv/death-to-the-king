@@ -1,26 +1,21 @@
-﻿using Assets.Code.Infrastructure.Unity;
-using Zenject;
-
-namespace Assets.Code.Infrastructure.Controller {
+﻿namespace Assets.Code.Infrastructure.Input {
 
     /// <summary>
     /// Input manager service that manages all input received and maps
     /// to the correct action, depending on the game context or state.
     /// </summary>
-    public class InputManager : MonoBehaviourExtension, IInputManager {
+    public class InputManager : IInputManager {
 
         private IGameInput[] gameInputs;
-        private MonoInstaller coreInstaller;    // DI Container
 
-        private void InitializeGameInputs() 
+        public InputManager()
         {
             gameInputs = new IGameInput[4];
-
             IGameInput gameInput = new KeyboardGameInput(PlayerInputNumber.Player1);
             gameInputs[0] = gameInput;
         }
 
-        private void ProcessGameInputs() 
+        public void ProcessGameInputs() 
         {
             foreach (GameInput gameInput in gameInputs)
             {
@@ -31,18 +26,6 @@ namespace Assets.Code.Infrastructure.Controller {
                 }
             }
         }
-
-        void Awake() {
-            InitializeGameInputs();
-        }
-
-	    protected void Start () {
-            coreInstaller = GetComponent<MonoInstaller>();
-        }
-
-        protected void Update () {
-            ProcessGameInputs();
-	    }
 
         public IGameInput GetGameInput(PlayerInputNumber inputNumber)
         {

@@ -1,4 +1,4 @@
-﻿namespace Assets.Code.Infrastructure.Controller
+﻿namespace Assets.Code.Infrastructure.Input
 {
     /// <summary>
     /// Enumerates the possible numbers of the input of a player

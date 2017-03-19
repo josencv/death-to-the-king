@@ -1,7 +1,8 @@
-﻿namespace Assets.Code.Infrastructure.Controller
+﻿namespace Assets.Code.Infrastructure.Input
 {
     public interface IInputManager
     {
         IGameInput GetGameInput(PlayerInputNumber player);
+        void ProcessGameInputs();
     }
 }

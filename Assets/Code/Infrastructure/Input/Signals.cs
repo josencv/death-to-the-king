@@ -1,4 +1,4 @@
-﻿namespace Assets.Code.Infrastructure.Controller
+﻿namespace Assets.Code.Infrastructure.Input
 {
     /// <summary>
     /// Represents a game signal that can be triggered by a GameInput button

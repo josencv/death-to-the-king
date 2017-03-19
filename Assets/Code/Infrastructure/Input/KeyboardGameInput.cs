@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-namespace Assets.Code.Infrastructure.Controller
+namespace Assets.Code.Infrastructure.Input
 {
     /// <summary>
     /// This class is the keyboard specialization of the GameInput class.
@@ -63,15 +63,15 @@ namespace Assets.Code.Infrastructure.Controller
             // Triggers button down game events
             foreach (KeyValuePair<KeyCode, GameInputButton> entry in buttonMapper)
             {
-                if (Input.GetKeyDown(entry.Key))
+                if (UnityEngine.Input.GetKeyDown(entry.Key))
                 {
                     currentButtonState[entry.Value] = GameInputButtonState.Down;
                 }
-                else if (Input.GetKeyUp(entry.Key))
+                else if (UnityEngine.Input.GetKeyUp(entry.Key))
                 {
                     currentButtonState[entry.Value] = GameInputButtonState.Pressed;
                 }
-                else if (Input.GetKey(entry.Key))
+                else if (UnityEngine.Input.GetKey(entry.Key))
                 {
                     currentButtonState[entry.Value] = GameInputButtonState.Pressed;
                 }
@@ -83,7 +83,7 @@ namespace Assets.Code.Infrastructure.Controller
             // Triggers axis actions
             foreach (KeyValuePair<KeyCode, GameInputAxisValuePair> entry in axisMapper)
             {
-                if (Input.GetKey(entry.Key))
+                if (UnityEngine.Input.GetKey(entry.Key))
                 {
                     switch (entry.Value.GameInputAxis)
                     {
