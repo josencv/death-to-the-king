@@ -10,24 +10,38 @@ namespace Assets.Code.Components.Movement
     public class NormalMovement : MonoBehaviourExtension, IMovable
     {
         private float speed;
-        private Rigidbody2D body;
+        private Rigidbody body;
+        private Vector3 movement;   // Stores the movement value to be applied in the next physics iteration
 
         [Inject]
-        private void Inject(Rigidbody2D body)
+        private void Inject(Rigidbody body)
         {
             this.body = body;
         }
 
         public void Awake()
         {
-            speed = 3;
+            movement = Vector3.zero;
+            speed = 5;
         }
 
-        public void Move(float x, float y)
+        public void Move(float x, float z)
         {
-            // TODO: set a max vector length
-            Vector2 direction = new Vector2(x, y);
-            body.velocity = direction * speed;
+            movement = Vector3.ClampMagnitude(new Vector3(x, 0, z), 1);
+        }
+
+        private void ApplyMovement()
+        {
+            transform.position = transform.position + movement / 15;
+            if (movement != Vector3.zero)
+            {
+                transform.rotation = Quaternion.LookRotation(movement);
+            }
+        }
+
+        private void FixedUpdate()
+        {
+            ApplyMovement();
         }
     }
 }

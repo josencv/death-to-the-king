@@ -11,7 +11,9 @@
         public InputManager()
         {
             gameInputs = new IGameInput[4];
-            IGameInput gameInput = new KeyboardGameInput(PlayerInputNumber.Player1);
+            //IGameInput gameInput = new KeyboardGameInput(PlayerInputNumber.Player1);   // TODO: resolve with DI
+            IGameInput gameInput = new XboxGameInput(PlayerInputNumber.Player1, XboxCtrlrInput.XboxController.First);   // TODO: resolve with DI
+
             gameInputs[0] = gameInput;
         }
 

@@ -20,14 +20,14 @@ namespace Assets.Code.Configuration
 
             Container.Bind<GameManager>().AsSingle();
             Container.Bind<IInputManager>().To<InputManager>().AsSingle();
-            Container.Bind<IGameInput>().To<KeyboardGameInput>().AsTransient();
+            Container.Bind<IGameInput>().To<XboxGameInput>().AsTransient();
             Container.Bind<ISoundManager>().To<SoundManager2D>().AsSingle();
 
             // Components
 
             Container.Bind<IEntityController>().FromComponentSibling();
             Container.Bind<IMovable>().FromComponentSibling();
-            Container.Bind<Rigidbody2D>().FromComponentSibling();
+            Container.Bind<Rigidbody>().FromComponentSibling();
             Container.Bind<SpriteRenderer>().FromComponentSibling();
 
             // Containers
