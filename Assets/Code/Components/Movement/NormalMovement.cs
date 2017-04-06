@@ -22,7 +22,7 @@ namespace Assets.Code.Components.Movement
         public void Awake()
         {
             movement = Vector3.zero;
-            speed = 5;
+            speed = 3;
         }
 
         public void Move(float x, float z)
@@ -32,7 +32,8 @@ namespace Assets.Code.Components.Movement
 
         private void ApplyMovement()
         {
-            transform.position = transform.position + movement / 15;
+            body.velocity = movement * speed;
+            //transform.position = transform.position + movement / 15;
             if (movement != Vector3.zero)
             {
                 transform.rotation = Quaternion.LookRotation(movement);
