@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using Assets.Code.Infrastructure.Unity;
 
 namespace Assets.Code.Infrastructure.Sound
 {
-    public class SoundManager2D : MonoBehaviourExtension, ISoundManager
+    public class SoundManager2D : ISoundManager
     {
         private const int MaxLoopingSources = 32;
         private const int OneShotPriority = 0;
         private const int LoopBasePriority = 1;
+        private float masterVolume;
 
         /// <summary>
         /// Used to hold the audio source for one shot sound effects.
@@ -35,16 +35,17 @@ namespace Assets.Code.Infrastructure.Sound
         //A map of channel identifiers with their audio source
         private Dictionary<string, AudioSource> usedLoopingSources;
 
-        public void Start()
+        public SoundManager2D()
         {
+            masterVolume = 0.3f;
             oneShotSoundObject = new GameObject();
             oneShotSoundObject.name = "One Shot SFX Object";
-            DontDestroyOnLoad(oneShotSoundObject);
+            UnityEngine.Object.DontDestroyOnLoad(oneShotSoundObject);
             oneShotSoundSource = AddAudioSource(oneShotSoundObject, OneShotPriority);
 
             loopingSoundObject = new GameObject();
             loopingSoundObject.name = "Looping Sound Object";
-            DontDestroyOnLoad(loopingSoundObject);
+            UnityEngine.Object.DontDestroyOnLoad(loopingSoundObject);
 
             freeLoopingSources = new List<AudioSource>(MaxLoopingSources);
             for (int i = 0; i < MaxLoopingSources; ++i)
@@ -65,7 +66,7 @@ namespace Assets.Code.Infrastructure.Sound
         {
             if (clip != null)
             {
-                oneShotSoundSource.PlayOneShot(clip, volume);
+                oneShotSoundSource.PlayOneShot(clip, volume * masterVolume);
             }
         }
 
@@ -78,7 +79,7 @@ namespace Assets.Code.Infrastructure.Sound
         {
             if (list != null && list.Length > 0)
             {
-                oneShotSoundSource.PlayOneShot(list[UnityEngine.Random.Range(0, list.Length)], volume);
+                oneShotSoundSource.PlayOneShot(list[UnityEngine.Random.Range(0, list.Length)], volume * masterVolume);
             }
         }
 
@@ -217,7 +218,7 @@ namespace Assets.Code.Infrastructure.Sound
             source.loop = true;
             source.clip = clip;
             source.priority = priority;
-            source.volume = volume;
+            source.volume = volume * masterVolume;
 
             source.Play();
         }
