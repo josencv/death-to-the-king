@@ -1,6 +1,7 @@
 ﻿using Assets.Code.Components.Containers;
 using Assets.Code.Components.Controller;
 using Assets.Code.Components.Movement;
+using Assets.Code.Components.Weapon;
 using Assets.Code.Infrastructure.Input;
 using Assets.Code.Infrastructure.Sound;
 using System;
@@ -27,6 +28,7 @@ namespace Assets.Code.Configuration
 
             Container.Bind<IEntityController>().FromComponentSibling();
             Container.Bind<IMovable>().FromComponentSibling();
+            Container.Bind<IWeapon>().FromComponentSibling();
             Container.Bind<Rigidbody>().FromComponentSibling();
             Container.Bind<Animator>().FromComponentSibling();
             Container.Bind<SpriteRenderer>().FromComponentSibling();

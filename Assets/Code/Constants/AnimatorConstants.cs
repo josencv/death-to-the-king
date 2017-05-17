@@ -1,7 +1,8 @@
 ﻿namespace Assets.Code.Constants
 {
-    static class AnimatorConstants
+    public static class AnimatorParameters
     {
         public const string IsWalking = "isWalking";
+        public const string Attack = "attack";
     }
 }

@@ -16,7 +16,6 @@ namespace Assets.Code.Infrastructure.Input
 
         // List of all game events that can be triggered by the game input
         public event ButtonSignal PlayerAttackSignal;
-        public event ButtonSignal PlayerToggleWeaponSignal;
         public event StickSignal PlayerMoveSignal;
 
         /// <summary>
@@ -77,28 +76,18 @@ namespace Assets.Code.Infrastructure.Input
             return currentButtonState[button];
         }
 
-
         public void SendButtonDownSignals()
         {
             if (currentContext == GameInputContext.InGame)
             {
                 if (currentButtonState[GameInputButton.A] == GameInputButtonState.Down)
                 {
-                    if (PlayerAttackSignal != null)
-                    {
-                        PlayerAttackSignal.Invoke();
-                    }
-                }
-                else if (currentButtonState[GameInputButton.L1] == GameInputButtonState.Down)
-                {
-                    if (PlayerToggleWeaponSignal != null)
-                    {
-                        PlayerToggleWeaponSignal.Invoke();
-                    }
+                    TriggerEvent(PlayerAttackSignal);
                 }
             }
         }
 
+        // TODO: Consider moving the game logic to a game controller or similar.
         /// <summary>
         /// Sends the specified stick signal (X and Y axis values) to the subscribers, depending on the passed GameInputContext.
         /// </summary>
@@ -109,10 +98,7 @@ namespace Assets.Code.Infrastructure.Input
             {
                 if (stick == GameInputStick.Left)
                 {
-                    if (PlayerMoveSignal != null)
-                    {
-                        PlayerMoveSignal.Invoke(currentStickState[GameInputStick.Left][0], currentStickState[GameInputStick.Left][1]);
-                    }
+                    TriggerEvent(PlayerMoveSignal, currentStickState[GameInputStick.Left][0], currentStickState[GameInputStick.Left][1]);
                 }
 
                 if (stick == GameInputStick.Right)
@@ -131,6 +117,30 @@ namespace Assets.Code.Infrastructure.Input
             SendStickEvent(GameInputStick.Left);
             SendStickEvent(GameInputStick.Right);
         }
+
+        #region Private methods
+
+        /// <summary>
+        /// Triggers a button signal event
+        /// </summary>
+        /// <param name="signal"></param>
+        private void TriggerEvent(ButtonSignal signal)
+        {
+            if (signal != null)
+            {
+                signal.Invoke();
+            }
+        }
+
+        private void TriggerEvent(StickSignal signal, float x, float y)
+        {
+            if (signal != null)
+            {
+                signal.Invoke(x, y);
+            }
+        }
+
+        #endregion
 
         // Properties ==========================================================
 

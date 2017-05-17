@@ -5,5 +5,6 @@ namespace Assets.Code.Components.Controller
     public interface IEntityController
     {
         void Initialize(IGameInput gameInput);
+        bool IsAttacking { get; }
     }
 }

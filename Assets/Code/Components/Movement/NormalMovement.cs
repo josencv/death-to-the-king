@@ -1,4 +1,5 @@
-﻿using Assets.Code.Constants;
+﻿using Assets.Code.Components.Controller;
+using Assets.Code.Constants;
 using Assets.Code.Infrastructure.Unity;
 using UnityEngine;
 using Zenject;
@@ -11,13 +12,16 @@ namespace Assets.Code.Components.Movement
     public class NormalMovement : MonoBehaviourExtension, IMovable
     {
         private float speed;
+
+        private IEntityController controller;
         private Rigidbody body;
         private Animator animator;
         private Vector3 movement;   // Stores the movement value to be applied in the next physics iteration
 
         [Inject]
-        private void Inject(Rigidbody body, Animator animator)
+        private void Inject(IEntityController controller, Rigidbody body, Animator animator)
         {
+            this.controller = controller;
             this.body = body;
             this.animator = animator;
         }
@@ -35,17 +39,27 @@ namespace Assets.Code.Components.Movement
 
         private void ApplyMovement()
         {
+            if (!CanMove())
+            {
+                body.velocity = Vector3.zero;
+                return;
+            }
+
             body.velocity = movement * speed;
-            //transform.position = transform.position + movement / 15;
             if (movement != Vector3.zero)
             {
-                animator.SetBool(AnimatorConstants.IsWalking, true);
+                animator.SetBool(AnimatorParameters.IsWalking, true);
                 transform.rotation = Quaternion.LookRotation(movement);
             }
             else
             {
-                animator.SetBool(AnimatorConstants.IsWalking, false);
+                animator.SetBool(AnimatorParameters.IsWalking, false);
             }
+        }
+
+        private bool CanMove()
+        {
+            return !controller.IsAttacking;
         }
 
         private void FixedUpdate()
