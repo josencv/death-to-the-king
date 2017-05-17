@@ -1,4 +1,5 @@
-﻿using Assets.Code.Infrastructure.Unity;
+﻿using Assets.Code.Constants;
+using Assets.Code.Infrastructure.Unity;
 using UnityEngine;
 using Zenject;
 
@@ -11,12 +12,14 @@ namespace Assets.Code.Components.Movement
     {
         private float speed;
         private Rigidbody body;
+        private Animator animator;
         private Vector3 movement;   // Stores the movement value to be applied in the next physics iteration
 
         [Inject]
-        private void Inject(Rigidbody body)
+        private void Inject(Rigidbody body, Animator animator)
         {
             this.body = body;
+            this.animator = animator;
         }
 
         public void Awake()
@@ -36,7 +39,12 @@ namespace Assets.Code.Components.Movement
             //transform.position = transform.position + movement / 15;
             if (movement != Vector3.zero)
             {
+                animator.SetBool(AnimatorConstants.IsWalking, true);
                 transform.rotation = Quaternion.LookRotation(movement);
+            }
+            else
+            {
+                animator.SetBool(AnimatorConstants.IsWalking, false);
             }
         }
 

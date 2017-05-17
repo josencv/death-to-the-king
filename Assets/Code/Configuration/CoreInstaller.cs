@@ -28,6 +28,7 @@ namespace Assets.Code.Configuration
             Container.Bind<IEntityController>().FromComponentSibling();
             Container.Bind<IMovable>().FromComponentSibling();
             Container.Bind<Rigidbody>().FromComponentSibling();
+            Container.Bind<Animator>().FromComponentSibling();
             Container.Bind<SpriteRenderer>().FromComponentSibling();
 
             // Containers
