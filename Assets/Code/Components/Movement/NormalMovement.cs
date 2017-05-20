@@ -1,4 +1,6 @@
 ﻿using Assets.Code.Components.Controller;
+using Assets.Code.Components.Health;
+using Assets.Code.Components.Weapon;
 using Assets.Code.Constants;
 using Assets.Code.Infrastructure.Unity;
 using UnityEngine;
@@ -13,17 +15,17 @@ namespace Assets.Code.Components.Movement
     {
         private float speed;
 
-        private IEntityController controller;
+        private IWeapon weapon;
         private Rigidbody body;
         private Animator animator;
         private Vector3 movement;   // Stores the movement value to be applied in the next physics iteration
 
         [Inject]
-        private void Inject(IEntityController controller, Rigidbody body, Animator animator)
+        private void Inject(Rigidbody body, Animator animator, IWeapon weapon)
         {
-            this.controller = controller;
             this.body = body;
             this.animator = animator;
+            this.weapon = weapon;
         }
 
         public void Awake()
@@ -59,7 +61,7 @@ namespace Assets.Code.Components.Movement
 
         private bool CanMove()
         {
-            return !controller.IsAttacking;
+            return weapon == null || !weapon.IsAttacking;
         }
 
         private void FixedUpdate()
