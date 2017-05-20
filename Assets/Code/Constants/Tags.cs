@@ -2,6 +2,7 @@
 {
     public static class Tags
     {
-        const string Enemy = "Enemy";
+        public const string Enemy = "Enemy";
+        public const string Weapon = "Weapon";
     }
 }

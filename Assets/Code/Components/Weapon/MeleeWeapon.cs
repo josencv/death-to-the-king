@@ -9,8 +9,11 @@ namespace Assets.Code.Components.Weapon
     public class MeleeWeapon : MonoBehaviourExtension, IWeapon
     {
         private Animator animator;
+        private Collider weaponCollider;
 
         public float baseDamage;
+        private bool isAttacking;
+        private bool hitboxActive;
 
         [Inject]
         private void Inject(Animator animator)
@@ -18,14 +21,67 @@ namespace Assets.Code.Components.Weapon
             this.animator = animator;
         }
 
+        void Awake()
+        {
+            isAttacking = false;
+            hitboxActive = false;
+        }
+
+        void Start()
+        {
+            var colliders = GetComponentsInChildren<Collider>();
+            foreach (var collider in colliders)
+            {
+                if (collider.tag == Tags.Weapon)
+                {
+                    weaponCollider = collider;
+                    break;
+                }
+            }
+
+            if (weaponCollider != null)
+            {
+                weaponCollider.enabled = false;
+            }
+        }
+
         public void Attack()
         {
+            isAttacking = true;
             animator.SetTrigger(AnimatorParameters.Attack);
+        }
+
+        public void Stop()
+        {
+            isAttacking = false;
+        }
+
+        public void EnableHitbox()
+        {
+            hitboxActive = true;
+            if (weaponCollider != null)
+            {
+                weaponCollider.enabled = true;
+            }
+        }
+
+        public void DisableHitbox()
+        {
+            hitboxActive = false;
+            if (weaponCollider != null)
+            {
+                weaponCollider.enabled = false;
+            }
         }
 
         public bool IsAttacking
         {
-            get { return animator.GetCurrentAnimatorStateInfo(0).IsName(AnimatorStates.Attack); }
+            get { return isAttacking; }
+        }
+
+        public bool IsHitboxEnabled
+        {
+            get { return hitboxActive; }
         }
 
         void OnTriggerEnter(Collider other)
