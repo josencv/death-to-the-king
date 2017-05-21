@@ -9,6 +9,8 @@ namespace Assets.Code.Components.Weapon
     public class MeleeWeapon : MonoBehaviourExtension, IWeapon
     {
         private Animator animator;
+
+        [SerializeField]
         private Collider weaponCollider;
 
         [SerializeField]
@@ -30,7 +32,6 @@ namespace Assets.Code.Components.Weapon
 
         void Start()
         {
-            weaponCollider = LookUpWeaponCollider();
             DisableHitbox();
         }
 
@@ -84,20 +85,6 @@ namespace Assets.Code.Components.Weapon
             {
                 otherHealth.TakeDamage(this.baseDamage);
             }
-        }
-
-        private Collider LookUpWeaponCollider()
-        {
-            var colliders = GetComponentsInChildren<Collider>();
-            foreach (var collider in colliders)
-            {
-                if (collider.tag == Tags.Weapon)
-                {
-                    return collider;
-                }
-            }
-
-            return null;
         }
     }
 }
