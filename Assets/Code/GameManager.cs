@@ -17,7 +17,8 @@ namespace Assets.Code
         private ISoundManager soundManager;
         private Factory<Character> characterFactory;
 
-        public CoreInstaller.Settings GameSettings;
+        [SerializeField]
+        private CoreInstaller.Settings GameSettings;
 
         [Inject]
         private void Inject(IInputManager inputManager, ISoundManager soundManager, Factory<Character> characterFactory)

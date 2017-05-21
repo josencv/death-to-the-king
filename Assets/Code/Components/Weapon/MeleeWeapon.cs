@@ -11,7 +11,8 @@ namespace Assets.Code.Components.Weapon
         private Animator animator;
         private Collider weaponCollider;
 
-        public float baseDamage;
+        [SerializeField]
+        private float baseDamage;
         private bool isAttacking;
         private bool hitboxActive;
 
@@ -29,20 +30,8 @@ namespace Assets.Code.Components.Weapon
 
         void Start()
         {
-            var colliders = GetComponentsInChildren<Collider>();
-            foreach (var collider in colliders)
-            {
-                if (collider.tag == Tags.Weapon)
-                {
-                    weaponCollider = collider;
-                    break;
-                }
-            }
-
-            if (weaponCollider != null)
-            {
-                weaponCollider.enabled = false;
-            }
+            weaponCollider = LookUpWeaponCollider();
+            DisableHitbox();
         }
 
         public void Attack()
@@ -91,10 +80,24 @@ namespace Assets.Code.Components.Weapon
             // Makes character BIG
             //gameObject.transform.localScale = new Vector3(gameObject.transform.localScale.x * 1.1f, gameObject.transform.localScale.y * 1.1f, 0);
 
-            if (otherHealth != null && otherHealth.tag == "Enemy")
+            if (otherHealth != null && otherHealth.tag == Tags.Enemy)
             {
                 otherHealth.TakeDamage(this.baseDamage);
             }
+        }
+
+        private Collider LookUpWeaponCollider()
+        {
+            var colliders = GetComponentsInChildren<Collider>();
+            foreach (var collider in colliders)
+            {
+                if (collider.tag == Tags.Weapon)
+                {
+                    return collider;
+                }
+            }
+
+            return null;
         }
     }
 }

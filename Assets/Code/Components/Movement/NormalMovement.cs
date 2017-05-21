@@ -13,6 +13,7 @@ namespace Assets.Code.Components.Movement
     /// </summary>
     public class NormalMovement : MonoBehaviourExtension, IMovable
     {
+        [SerializeField]
         private float speed;
 
         private IWeapon weapon;
@@ -31,7 +32,6 @@ namespace Assets.Code.Components.Movement
         public void Awake()
         {
             movement = Vector3.zero;
-            speed = 3;
         }
 
         public void Move(float x, float z)

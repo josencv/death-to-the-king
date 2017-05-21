@@ -8,7 +8,8 @@ namespace Assets.Code.Components.Health
     {
         private Animator animator;
 
-        public int maxHealth;
+        [SerializeField]
+        private int maxHealth;
 
         private bool isDead;
         private float currentHealth;
