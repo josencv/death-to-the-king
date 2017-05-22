@@ -1,4 +1,4 @@
-﻿using Assets.Code.Components.Health;
+﻿using Assets.Code.Components.Body;
 using Assets.Code.Constants;
 using Assets.Code.Infrastructure.Unity;
 using UnityEngine;

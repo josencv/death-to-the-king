@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 using Zenject;
 
-namespace Assets.Code.Components.Health
+namespace Assets.Code.Components.Body
 {
     public class Body : MonoBehaviourExtension, IBody
     {
@@ -50,7 +50,7 @@ namespace Assets.Code.Components.Health
             {
                 isHit = true;
                 TakeDamage(amount);
-                actions.Add("Kockback", () => ApplyKnockback(direction));
+                actions["Kockback"] = () => ApplyKnockback(direction);
             }
         }
 

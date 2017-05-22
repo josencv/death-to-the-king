@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.Code.Components.Health
+namespace Assets.Code.Components.Body
 {
     public interface IBody : IComponent
     {

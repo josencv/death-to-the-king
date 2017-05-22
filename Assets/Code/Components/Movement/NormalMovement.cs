@@ -28,7 +28,7 @@ namespace Assets.Code.Components.Movement
 
         public void Move(float x, float z)
         {
-            actions.Add("Move", () => ApplyMovement(x, z));
+            actions["Move"] = () => ApplyMovement(x, z);
         }
 
         private void ApplyMovement(float x, float z)

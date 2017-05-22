@@ -21,10 +21,16 @@ namespace Assets.Code.Infrastructure.Unity
 
         protected virtual void ExecuteActions()
         {
-            foreach (var action in actions)
+            List<string> keysToRemove = new List<string>();
+            foreach (var actionPair in actions)
             {
-                action.Value();
-                actions.Remove(action.Key);
+                actionPair.Value();
+                keysToRemove.Add(actionPair.Key);
+            }
+
+            foreach (var key in keysToRemove)
+            {
+                actions.Remove(key);
             }
         }
     }
