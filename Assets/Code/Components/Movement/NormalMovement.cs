@@ -1,6 +1,4 @@
-﻿using Assets.Code.Components.Controller;
-using Assets.Code.Components.Health;
-using Assets.Code.Components.Weapon;
+﻿using Assets.Code.Components.Weapon;
 using Assets.Code.Constants;
 using Assets.Code.Infrastructure.Unity;
 using UnityEngine;
@@ -19,7 +17,6 @@ namespace Assets.Code.Components.Movement
         private IWeapon weapon;
         private Rigidbody body;
         private Animator animator;
-        private Vector3 movement;   // Stores the movement value to be applied in the next physics iteration
 
         [Inject]
         private void Inject(Rigidbody body, Animator animator, IWeapon weapon)
@@ -29,17 +26,12 @@ namespace Assets.Code.Components.Movement
             this.weapon = weapon;
         }
 
-        public void Awake()
-        {
-            movement = Vector3.zero;
-        }
-
         public void Move(float x, float z)
         {
-            movement = Vector3.ClampMagnitude(new Vector3(x, 0, z), 1);
+            actions.Add("Move", () => ApplyMovement(x, z));
         }
 
-        private void ApplyMovement()
+        private void ApplyMovement(float x, float z)
         {
             if (!CanMove())
             {
@@ -47,6 +39,7 @@ namespace Assets.Code.Components.Movement
                 return;
             }
 
+            Vector3 movement = Vector3.ClampMagnitude(new Vector3(x, 0, z), 1);
             body.velocity = movement * speed;
             if (movement != Vector3.zero)
             {
@@ -66,7 +59,7 @@ namespace Assets.Code.Components.Movement
 
         private void FixedUpdate()
         {
-            ApplyMovement();
+            ExecuteActions();
         }
     }
 }

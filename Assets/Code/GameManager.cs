@@ -28,7 +28,7 @@ namespace Assets.Code
             this.characterFactory = characterFactory;
         }
 
-        void Awake()
+        private void Awake()
         {
             Character character = characterFactory.Create();
             character.transform.position = new Vector3(0, 0, 0);    // TODO: add a Position property in the Character class
@@ -38,12 +38,12 @@ namespace Assets.Code
             character.GetComponent<IEntityController>().Initialize(input);
         }
 
-        void Start()
+        private void Start()
         {
             soundManager.PlayLoopingSound("Sound/Music/seiken-powell", "background", 1, 0.5f);
         }
 
-        void Update()
+        private void Update()
         {
             inputManager.ProcessGameInputs();
         }

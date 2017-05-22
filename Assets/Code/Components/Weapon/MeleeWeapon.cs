@@ -24,13 +24,13 @@ namespace Assets.Code.Components.Weapon
             this.animator = animator;
         }
 
-        void Awake()
+        private void Awake()
         {
             isAttacking = false;
             hitboxActive = false;
         }
 
-        void Start()
+        private void Start()
         {
             DisableHitbox();
         }
@@ -74,16 +74,18 @@ namespace Assets.Code.Components.Weapon
             get { return hitboxActive; }
         }
 
-        void OnTriggerEnter(Collider other)
+        private void OnTriggerEnter(Collider other)
         {
-            IHealth otherHealth = other.GetComponent<IHealth>();
+            IBody otherBody = other.GetComponent<IBody>();
 
             // Makes character BIG
             //gameObject.transform.localScale = new Vector3(gameObject.transform.localScale.x * 1.1f, gameObject.transform.localScale.y * 1.1f, 0);
 
-            if (otherHealth != null && otherHealth.tag == Tags.Enemy)
+            if (otherBody != null && otherBody.tag == Tags.Enemy)
             {
-                otherHealth.TakeDamage(this.baseDamage);
+                Vector3 direction = otherBody.transform.position - transform.position;
+                direction = new Vector3(direction.x, 0, direction.z);
+                otherBody.Hit(this.baseDamage, direction);
             }
         }
     }
