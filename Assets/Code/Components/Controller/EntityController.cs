@@ -27,10 +27,5 @@ namespace Assets.Code.Components.Controller
             gameInput.PlayerMoveSignal += movement.Move;
             gameInput.PlayerAttackSignal += weapon.Attack;
         }
-
-        public bool IsAttacking
-        {
-            get { return animator.GetCurrentAnimatorStateInfo(0).IsName(AnimatorStates.Attack); }
-        }
     }
 }

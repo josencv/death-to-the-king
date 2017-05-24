@@ -6,7 +6,8 @@ namespace Assets.Code.Configuration
     [CreateAssetMenu(fileName = "SettingsInstaller", menuName = "Installers/SettingsInstaller")]
     public class SettingsInstaller : ScriptableObjectInstaller<SettingsInstaller>
     {
-        public CoreInstaller.Settings GameInstaller;
+        [SerializeField]
+        private CoreInstaller.Settings GameInstaller;
 
         public override void InstallBindings()
         {
