@@ -7,7 +7,7 @@ namespace Assets.Code.Components.Body
 {
     public class Body : MonoBehaviourExtension, IBody
     {
-        private const float knockbackBaseSpeed = 10.0f;
+        private const float knockbackBaseSpeed = 14.0f;
         private const float knockbackDuration = 0.08f;
 
         private Animator animator;
