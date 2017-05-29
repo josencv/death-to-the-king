@@ -30,12 +30,16 @@ namespace Assets.Code
 
         private void Awake()
         {
-            Character character = characterFactory.Create();
-            character.transform.position = new Vector3(0, 0, 0);    // TODO: add a Position property in the Character class
-            character.transform.rotation = Quaternion.identity;
+            Character[] characters = new Character[4];
+            characters[0] = characterFactory.Create();
+            characters[0].transform.position = new Vector3(0, 0, 0);    // TODO: add a Position property in the Character class
+            characters[0].transform.rotation = Quaternion.identity;
+            characters[0].GetComponent<IEntityController>().Initialize(inputManager.GetGameInput(PlayerInputNumber.Player1));
 
-            IGameInput input = inputManager.GetGameInput(PlayerInputNumber.Player1);
-            character.GetComponent<IEntityController>().Initialize(input);
+            characters[1] = characterFactory.Create();
+            characters[1].transform.position = new Vector3(-1, 0, -1);    // TODO: add a Position property in the Character class
+            characters[1].transform.rotation = Quaternion.identity;
+            characters[1].GetComponent<IEntityController>().Initialize(inputManager.GetGameInput(PlayerInputNumber.Player2));
         }
 
         private void Start()
