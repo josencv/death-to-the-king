@@ -7,8 +7,9 @@ namespace Assets.Code.Components.Body
 {
     public class Body : MonoBehaviourExtension, IBody
     {
-        private const float knockbackBaseSpeed = 14.0f;
-        private const float knockbackDuration = 0.08f;
+        private const float knockbackBaseSpeed = 12.0f;
+        private const float knockbackDuration = 0.09f;
+        private readonly Color hitColor = new Color(1, 0.3f, 0.3f, 1);
 
         private Animator animator;
         private Rigidbody body;
@@ -50,6 +51,7 @@ namespace Assets.Code.Components.Body
             {
                 isHit = true;
                 TakeDamage(amount);
+                GetComponentInChildren<Renderer>().material.color = hitColor;
                 actions["Kockback"] = () => ApplyKnockback(direction);
             }
         }
@@ -77,6 +79,7 @@ namespace Assets.Code.Components.Body
                 if (currentKnockbackTime >= knockbackDuration)
                 {
                     isHit = false;
+                    GetComponentInChildren<Renderer>().material.color = Color.white;
                     body.velocity = Vector3.zero;
                 }
             }
