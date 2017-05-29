@@ -40,6 +40,10 @@ namespace Assets.Code
             characters[1].transform.position = new Vector3(-1, 0, -1);    // TODO: add a Position property in the Character class
             characters[1].transform.rotation = Quaternion.identity;
             characters[1].GetComponent<IEntityController>().Initialize(inputManager.GetGameInput(PlayerInputNumber.Player2));
+
+            Camera camera = Camera.main;
+            GameCamera gameCamera = camera.GetComponent<GameCamera>();
+            gameCamera.target = characters[1].gameObject;
         }
 
         private void Start()
