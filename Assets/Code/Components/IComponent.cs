@@ -6,5 +6,7 @@ namespace Assets.Code.Components
     {
         string tag { get; }
         Transform transform { get; }
+
+        T GetComponent<T>();
     }
 }

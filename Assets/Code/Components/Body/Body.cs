@@ -100,5 +100,7 @@ namespace Assets.Code.Components.Body
             ExecuteActions();
             CheckKnockback(Time.deltaTime);
         }
+
+        public bool IsDead { get { return isDead; } }
     }
 }

@@ -19,7 +19,7 @@ namespace Assets.Code.Components.Movement
         private Animator animator;
 
         [Inject]
-        private void Inject(Rigidbody body, Animator animator, IWeapon weapon)
+        private void Inject(Rigidbody body, Animator animator, [InjectOptional] IWeapon weapon)
         {
             this.body = body;
             this.animator = animator;
