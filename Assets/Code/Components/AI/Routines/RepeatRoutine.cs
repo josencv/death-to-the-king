@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Assets.Code.Components.AI
+namespace Assets.Code.Components.AI.Routines
 {
     class RepeatRoutine : Routine
     {
@@ -22,7 +22,6 @@ namespace Assets.Code.Components.AI
 
         public override void Start()
         {
-            Debug.logger.Log("Repeat routine: Start");
             counter++;
             base.Start();
             this.routine.Start();
@@ -30,14 +29,11 @@ namespace Assets.Code.Components.AI
 
         public override void Reset()
         {
-            Debug.logger.Log("Repeat routine: Reset");
             counter = 0;
-            Start();
         }
 
         public override void Act()
         {
-            Debug.logger.Log("Repeat routine: Act");
             base.Act();
 
             if (routine.IsStopped)
@@ -53,7 +49,7 @@ namespace Assets.Code.Components.AI
                 if (times == -1 || counter < times)
                 {
                     counter++;
-                    routine.Reset();
+                    routine.Restart();
                 }
                 else
                 {

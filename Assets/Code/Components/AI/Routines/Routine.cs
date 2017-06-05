@@ -1,6 +1,6 @@
 ﻿using Assets.Code.Components.Body;
 
-namespace Assets.Code.Components.AI
+namespace Assets.Code.Components.AI.Routines
 {
     public abstract class Routine
     {
@@ -13,6 +13,23 @@ namespace Assets.Code.Components.AI
             currentState = RoutineState.Stopped;
         }
 
+        public virtual void Start()
+        {
+            this.currentState = RoutineState.Running;
+        }
+
+        public virtual void Stop()
+        {
+            this.currentState = RoutineState.Stopped;
+        }
+
+        public virtual void Restart()
+        {
+            this.Stop();
+            this.Reset();
+            this.Start();
+        }
+
         public abstract void Reset();
 
         public virtual void Act()
@@ -21,11 +38,6 @@ namespace Assets.Code.Components.AI
             {
                 this.Fail();
             }
-        }
-
-        public virtual void Start()
-        {
-            this.currentState = RoutineState.Running;
         }
 
         public virtual void Succeed()

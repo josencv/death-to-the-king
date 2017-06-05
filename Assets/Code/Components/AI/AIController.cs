@@ -4,28 +4,21 @@ namespace Assets.Code.Components.AI
 {
     public class AIController : MonoBehaviourExtension, IComponent 
     {
-        private Routine routine;
+        private BehaviourTree tree;
 
         private void Awake()
         {
-            BuildBehaviourTree();
-        }
-
-        private void BuildBehaviourTree()
-        {
-            var wander = new WanderRoutine(this);
-            var root = new RepeatRoutine(this, wander);
-            routine = root;
+            tree = new BehaviourTree(this);
         }
 
         private void Start()
         {
-            routine.Start();
+            tree.Start();
         }
 
         private void Update()
         {
-            routine.Act();
+            tree.Update();
         }
     }
 }

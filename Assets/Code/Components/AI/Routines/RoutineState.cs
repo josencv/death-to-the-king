@@ -1,4 +1,4 @@
-﻿namespace Assets.Code.Components.AI
+﻿namespace Assets.Code.Components.AI.Routines
 {
     public enum RoutineState
     {
