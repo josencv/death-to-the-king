@@ -5,7 +5,6 @@ namespace Assets.Code.Components.AI.Routines
 {
     class WanderRoutine : Routine
     {
-        private IComponent entity;
         private SequenceRoutine sequenceRoutine;
         private WalkRoutine walkRoutine;
         private IdleRoutine idleRoutine;
@@ -17,14 +16,13 @@ namespace Assets.Code.Components.AI.Routines
         /// </summary>
         /// <param name="wanderRadius">The max possible radius to wander to from current position.</param>
         /// <param name="idleDuration">The iddle duration between movement in seconds.</param>
-        public WanderRoutine(IComponent entity, float wanderRadius = 1, float idleDuration = 3) : base(entity)
+        public WanderRoutine(AIController ai, float wanderRadius = 1, float idleDuration = 4) : base(ai)
         {
             this.wanderRadius = wanderRadius;
-            this.entity = entity;
-            transform = entity.GetComponent<Transform>();
-            walkRoutine = new WalkRoutine(entity, GenerateDestination(wanderRadius));
-            idleRoutine = new IdleRoutine(entity, idleDuration);
-            sequenceRoutine = new SequenceRoutine(entity, new Routine[] { idleRoutine, walkRoutine });
+            transform = ai.GetComponent<Transform>();
+            walkRoutine = new WalkRoutine(ai, GenerateDestination(wanderRadius));
+            idleRoutine = new IdleRoutine(ai, idleDuration);
+            sequenceRoutine = new SequenceRoutine(ai, new Routine[] { idleRoutine, walkRoutine });
         }
 
         public override void Start()

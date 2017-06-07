@@ -9,9 +9,9 @@ namespace Assets.Code.Components.AI.Routines
         private float idleDuration;
         private float currentTime;
 
-        public IdleRoutine(IComponent entity, float idleDuration) : base(entity)
+        public IdleRoutine(AIController ai, float idleDuration) : base(ai)
         {
-            movement = entity.GetComponent<IMovable>();
+            movement = ai.GetComponent<IMovable>();
             this.idleDuration = idleDuration;
             currentTime = 0;
         }

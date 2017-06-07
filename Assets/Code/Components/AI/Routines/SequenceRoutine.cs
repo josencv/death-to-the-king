@@ -7,7 +7,7 @@ namespace Assets.Code.Components.AI.Routines
         private Routine[] routines;
         private int index;  // The current routine index
 
-        public SequenceRoutine(IComponent entity, Routine[] routines) : base(entity)
+        public SequenceRoutine(AIController ai, Routine[] routines) : base(ai)
         {
             if (routines == null || routines.Length == 0)
             {

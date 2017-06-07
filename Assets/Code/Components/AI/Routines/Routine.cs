@@ -7,9 +7,9 @@ namespace Assets.Code.Components.AI.Routines
         protected RoutineState currentState;
         protected IBody body;
 
-        public Routine(IComponent entity)
+        public Routine(AIController ai)
         {
-            body = entity.GetComponent<IBody>();
+            body = ai.GetComponent<IBody>();
             currentState = RoutineState.Stopped;
         }
 

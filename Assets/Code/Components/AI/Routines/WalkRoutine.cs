@@ -9,10 +9,10 @@ namespace Assets.Code.Components.AI.Routines
         Vector3 destination;
         IMovable movement;
 
-        public WalkRoutine(IComponent entity, Vector3 destination) : base(entity)
+        public WalkRoutine(AIController ai, Vector3 destination) : base(ai)
         {
             this.destination = destination;
-            this.movement = entity.GetComponent<IMovable>();
+            this.movement = ai.GetComponent<IMovable>();
         }
 
         public override void Start()

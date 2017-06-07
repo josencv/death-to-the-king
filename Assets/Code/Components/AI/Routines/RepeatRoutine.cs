@@ -13,7 +13,7 @@ namespace Assets.Code.Components.AI.Routines
         /// </summary>
         /// <param name="routine">The routine to repeat</param>
         /// <param name="times">How many times should the routine be repeated. If not set irt will wun indefinitely until it fails.</param>
-        public RepeatRoutine(IComponent entity, Routine routine, int times = -1) : base(entity)
+        public RepeatRoutine(AIController ai, Routine routine, int times = -1) : base(ai)
         {
             this.routine = routine;
             this.times = times;

@@ -2,7 +2,7 @@
 
 namespace Assets.Code.Components.Containers
 {
-    class Character : MonoBehaviour
+    public class Character : MonoBehaviour
     {
     }
 }

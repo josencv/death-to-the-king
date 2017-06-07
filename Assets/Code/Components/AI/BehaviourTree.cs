@@ -1,17 +1,33 @@
 ﻿using Assets.Code.Components.AI.Routines;
+using Zenject;
 
 namespace Assets.Code.Components.AI
 {
     public class BehaviourTree
     {
         private Routine root;
-        private IComponent entity;
+        private AIController ai;
+        private DiContainer container;
 
-        public BehaviourTree(IComponent entity)
+        public BehaviourTree(AIController ai)
+        {
+            this.ai = ai;
+        }
+
+        [Inject]
+        public void Inject(DiContainer container)
+        {
+            this.container = container;
+        }
+
+        public void Initialize()
         {
             // TODO: this should be built from a file... probably
-            var wander = new WanderRoutine(entity);
-            root = new RepeatRoutine(entity, wander);
+            var detect = new DetectRoutine(ai);
+            container.Inject(detect);
+            var wander = new WanderRoutine(ai);
+            root = new RepeatRoutine(ai, wander);
+            root = detect;
         }
 
         public void Start()
