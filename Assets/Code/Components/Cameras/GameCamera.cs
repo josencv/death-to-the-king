@@ -11,7 +11,6 @@ public class GameCamera : MonoBehaviour
     public Vector3 center;
     public float damping = 1;
 
-
     // Use this for initialization
     void Start()
     {
