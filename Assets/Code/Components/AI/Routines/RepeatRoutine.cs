@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Assets.Code.Components.AI.Routines
+﻿namespace Assets.Code.Components.AI.Routines
 {
     class RepeatRoutine : Routine
     {
@@ -17,7 +15,7 @@ namespace Assets.Code.Components.AI.Routines
         {
             this.routine = routine;
             this.times = times;
-            this.counter = 0;
+            counter = 0;
         }
 
         public override void Start()

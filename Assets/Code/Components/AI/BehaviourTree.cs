@@ -23,11 +23,10 @@ namespace Assets.Code.Components.AI
         public void Initialize()
         {
             // TODO: this should be built from a file... probably
-            var detect = new DetectRoutine(ai);
-            container.Inject(detect);
             var wander = new WanderRoutine(ai);
-            root = new RepeatRoutine(ai, wander);
-            root = detect;
+            var selector = new SelectorRoutine(ai, new Routine[] { wander });
+            var repeat = new RepeatRoutine(ai, selector);
+            root = repeat;
         }
 
         public void Start()
@@ -38,6 +37,11 @@ namespace Assets.Code.Components.AI
         public void Update()
         {
             root.Act();
+        }
+
+        public void Reevaluate()
+        {
+            root.Restart();
         }
     }
 }

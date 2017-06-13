@@ -2,12 +2,12 @@
 
 namespace Assets.Code.Components.AI.Routines
 {
-    class SequenceRoutine : Routine
+    class SelectorRoutine : Routine
     {
         private Routine[] routines;
         private int index;  // The current routine index
 
-        public SequenceRoutine(AIController ai, Routine[] routines) : base(ai)
+        public SelectorRoutine(AIController ai, Routine[] routines) : base(ai)
         {
             if (routines == null || routines.Length == 0)
             {
@@ -31,19 +31,19 @@ namespace Assets.Code.Components.AI.Routines
 
             if (routines[index].HasSucceeded)
             {
+                this.Succeed();
+            }
+            else if (routines[index].HasFailed)
+            {
                 index++;
                 if (index >= routines.Length)
                 {
-                    this.Succeed();
+                    this.Fail();
                 }
                 else
                 {
                     routines[index].Start();
                 }
-            }
-            else if (routines[index].HasFailed)
-            {
-                this.Fail();
             }
         }
 
