@@ -1,18 +1,18 @@
 ﻿using Assets.Code.Components.Movement;
 using UnityEngine;
 
-namespace Assets.Code.Components.AI.Routines
+namespace Assets.Code.Components.AI.Behaviour.Nodes
 {
-    public class WalkRoutine : Routine
+    public class WalkNode : BehaviourNode
     {
         private const float distanceThreshold = 0.3f;
         Vector3 destination;
         IMovable movement;
 
-        public WalkRoutine(AIController ai, Vector3 destination) : base(ai)
+        public WalkNode(BtContext context, Vector3 destination) : base(context)
         {
             this.destination = destination;
-            this.movement = ai.GetComponent<IMovable>();
+            this.movement = context.AI.GetComponent<IMovable>();
         }
 
         public override void Start()
@@ -22,7 +22,7 @@ namespace Assets.Code.Components.AI.Routines
 
         public override void Reset()
         {
-            currentState = RoutineState.Running;
+            currentState = NodeState.Running;
         }
 
         public override void Act()

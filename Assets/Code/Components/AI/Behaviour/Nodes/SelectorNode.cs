@@ -1,48 +1,48 @@
 ﻿using System;
 
-namespace Assets.Code.Components.AI.Routines
+namespace Assets.Code.Components.AI.Behaviour.Nodes
 {
-    class SelectorRoutine : Routine
+    class SelectorNode : BehaviourNode
     {
-        private Routine[] routines;
+        private BehaviourNode[] nodes;
         private int index;  // The current routine index
 
-        public SelectorRoutine(AIController ai, Routine[] routines) : base(ai)
+        public SelectorNode(BtContext context, BehaviourNode[] routines) : base(context)
         {
             if (routines == null || routines.Length == 0)
             {
                 throw new ArgumentException("cannot be null or empty", "routines");
             }
 
-            this.routines = routines;
+            this.nodes = routines;
             index = 0;
         }
 
         public override void Start()
         {
             base.Start();
-            routines[index].Start();
+            nodes[index].Start();
         }
 
         public override void Act()
         {
             base.Act();
-            routines[index].Act();
+            nodes[index].Act();
 
-            if (routines[index].HasSucceeded)
+            if (nodes[index].HasSucceeded)
             {
                 this.Succeed();
             }
-            else if (routines[index].HasFailed)
+            else if (nodes[index].HasFailed)
             {
                 index++;
-                if (index >= routines.Length)
+                if (index >= nodes.Length)
                 {
                     this.Fail();
                 }
                 else
                 {
-                    routines[index].Start();
+                    nodes[index].Start();
                 }
             }
         }
@@ -50,9 +50,9 @@ namespace Assets.Code.Components.AI.Routines
         public override void Reset()
         {
             index = 0;
-            foreach (Routine routine in routines)
+            foreach (BehaviourNode node in nodes)
             {
-                routine.Reset();
+                node.Reset();
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using Assets.Code.Constants;
+﻿using Assets.Code.Components.AI.Behaviour;
+using Assets.Code.Constants;
 using Assets.Code.Infrastructure.Unity;
 using Assets.Code.Shared;
 using UnityEngine;
@@ -9,7 +10,7 @@ namespace Assets.Code.Components.AI
     public class AIController : MonoBehaviourExtension, IComponent 
     {
         private DiContainer container;
-        private BehaviourTree tree;
+        private Behaviour.BehaviourTree tree;
         private WorldData worldData;
 
         private bool playerOnsight;
