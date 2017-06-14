@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Components.AI.Behaviour.Nodes;
+using Assets.Code.Components.Containers;
 using Zenject;
 
 namespace Assets.Code.Components.AI.Behaviour
@@ -12,6 +13,7 @@ namespace Assets.Code.Components.AI.Behaviour
         public BehaviourTree(AIController ai)
         {
             context = new BtContext(ai);
+            RegisterStateFields();
         }
 
         [Inject]
@@ -23,10 +25,19 @@ namespace Assets.Code.Components.AI.Behaviour
         public void Initialize()
         {
             // TODO: this should be built from a file... probably
+            var playerInSight = new ConditionNode(context, new Condition(FieldType.Bool, Operator.True, RegisteredFieldNames.PlayerInSight, 1.0f));
+            var approach = new ApproachNode(context);
+            var attack = new SequenceNode(context, new BehaviourNode[] { playerInSight, approach });
             var wander = new WanderNode(context);
-            var selector = new SelectorNode(context, new BehaviourNode[] { wander });
+            var selector = new SelectorNode(context, new BehaviourNode[] { attack, wander });
             var repeat = new RepeatNode(context, selector);
+
             root = repeat;
+        }
+
+        private void RegisterStateFields()
+        {
+            context.StateFields.Add(RegisteredFieldNames.PlayerInSight, new Field(FieldType.Bool, 0));
         }
 
         public void Start()
@@ -45,6 +56,27 @@ namespace Assets.Code.Components.AI.Behaviour
         }
 
         /// <summary>
+        /// Reevaluates the tree only if the passed criteria is true
+        /// </summary>
+        /// <param name="criteria">The criteria to check</param>
+        private void ReevaluateIf(bool criteria)
+        {
+            if (criteria)
+            {
+                root.Restart();
+            }
+        }
+
+        /// <summary>
+        /// Sets the hostile target to the behaviour
+        /// </summary>
+        /// <param name="character"></param>
+        public void SetTarget(Character character)
+        {
+            context.Target = character;
+        }
+
+        /// <summary>
         /// Registers a boolean field to the behaviour tree
         /// </summary>
         /// <param name="fieldName">The name of the field to register</param>
@@ -53,7 +85,7 @@ namespace Assets.Code.Components.AI.Behaviour
         {
             float fvalue = startingValue ? 1 : 0;
             Field field = new Field(FieldType.Bool, fvalue);
-            context.Fields.Add(fieldName, field);
+            context.StateFields.Add(fieldName, field);
         }
 
         /// <summary>
@@ -64,7 +96,7 @@ namespace Assets.Code.Components.AI.Behaviour
         public void RegisterIntField(string fieldName, int startingValue = 0)
         {
             Field field = new Field(FieldType.Int, startingValue);
-            context.Fields.Add(fieldName, field);
+            context.StateFields.Add(fieldName, field);
         }
 
         /// <summary>
@@ -75,7 +107,7 @@ namespace Assets.Code.Components.AI.Behaviour
         public void RegisterFloatField(string fieldName, float startingValue = 0)
         {
             Field field = new Field(FieldType.Float, startingValue);
-            context.Fields.Add(fieldName, field);
+            context.StateFields.Add(fieldName, field);
         }
 
         /// <summary>
@@ -86,7 +118,7 @@ namespace Assets.Code.Components.AI.Behaviour
         public void RegisterTriggerField(string fieldName)
         {
             Field field = new Field(FieldType.Trigger, 0);
-            context.Fields.Add(fieldName, field);
+            context.StateFields.Add(fieldName, field);
         }
 
         /// <summary>
@@ -96,7 +128,10 @@ namespace Assets.Code.Components.AI.Behaviour
         /// <param name="value">The new value to set to the field</param>
         public void SetBoolField(string fieldName, bool value)
         {
-            context.Fields[fieldName].Value = value ? 1 : 0;
+            var convertedValue = value ? 1 : 0;
+            var valueHasChanged = context.StateFields[fieldName].Value != convertedValue;
+            context.StateFields[fieldName].Value = convertedValue;
+            ReevaluateIf(valueHasChanged);
         }
 
         /// <summary>
@@ -106,7 +141,9 @@ namespace Assets.Code.Components.AI.Behaviour
         /// <param name="value">The new value to set to the field</param>
         public void SetIntField(string fieldName, int value)
         {
-            context.Fields[fieldName].Value = value;
+            var valueHasChanged = context.StateFields[fieldName].Value != value;
+            context.StateFields[fieldName].Value = value;
+            ReevaluateIf(valueHasChanged);
         }
 
         /// <summary>
@@ -116,7 +153,9 @@ namespace Assets.Code.Components.AI.Behaviour
         /// <param name="value">The new value to set to the field</param>
         public void SetFloatField(string fieldName, float value)
         {
-            context.Fields[fieldName].Value = value;
+            var valueHasChanged = context.StateFields[fieldName].Value != value;
+            context.StateFields[fieldName].Value = value;
+            ReevaluateIf(valueHasChanged);
         }
 
         /// <summary>
@@ -126,7 +165,8 @@ namespace Assets.Code.Components.AI.Behaviour
         /// <param name="value">The new value to set to the field</param>
         public void SetTrigger(string fieldName)
         {
-            context.Fields[fieldName].Value = 1.0f;
+            context.StateFields[fieldName].Value = 1.0f;
+            Reevaluate();
         }
     }
 }

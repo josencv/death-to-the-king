@@ -15,18 +15,22 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
             this.movement = context.AI.GetComponent<IMovable>();
         }
 
+        public void UpdateDestination(Vector3 destination)
+        {
+            this.destination = destination;
+        }
+
         public override void Start()
         {
             base.Start();
         }
 
-        public override void Reset()
-        {
-            currentState = NodeState.Running;
-        }
+        public override void Reset() { }
 
         public override void Act()
         {
+            base.Act();
+
             if (Vector3.Distance(movement.transform.position, destination) < distanceThreshold)
             {
                 movement.Move(0, 0);
@@ -50,6 +54,12 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
             {
                 destination = value;
             }
+        }
+
+        public override void Stop()
+        {
+            movement.Stop();
+            base.Stop();
         }
     }
 }

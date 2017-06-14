@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Components.AI.Behaviour;
+using Assets.Code.Components.Containers;
 using Assets.Code.Constants;
 using Assets.Code.Infrastructure.Unity;
 using Assets.Code.Shared;
@@ -10,7 +11,7 @@ namespace Assets.Code.Components.AI
     public class AIController : MonoBehaviourExtension, IComponent 
     {
         private DiContainer container;
-        private Behaviour.BehaviourTree tree;
+        private BehaviourTree tree;
         private WorldData worldData;
 
         private bool playerOnsight;
@@ -71,34 +72,19 @@ namespace Assets.Code.Components.AI
                     Debug.DrawRay(eyesPosition, vectorBetween, Color.red);
 
                     // TODO: in the future the raycast should ignore some layers
+                    // TODO: add logic to choose target if more than one player is in sight
                     if (Physics.Raycast(ray, out hit, this.SightDistance) &&
                         hit.collider.tag == Tags.Player)
                     {
-                        PlayerOnSight = true;
+                        tree.SetBoolField(RegisteredFieldNames.PlayerInSight, true);
+                        tree.SetTarget(hit.collider.GetComponent<Character>());
                         return;
                     }
                 }
             }
 
-            PlayerOnSight = false;
-        }
-
-        public bool PlayerOnSight
-        {
-            get
-            {
-                return playerOnsight;
-            }
-            set
-            {
-                bool valueHasChanged = playerOnsight != value;
-                playerOnsight = value;
-
-                if (valueHasChanged)
-                {
-                    tree.Reevaluate();
-                }
-            }
+            tree.SetBoolField(RegisteredFieldNames.PlayerInSight, false);
+            tree.SetTarget(null);
         }
 
         public float SightDistance { get { return sightDistance; } }

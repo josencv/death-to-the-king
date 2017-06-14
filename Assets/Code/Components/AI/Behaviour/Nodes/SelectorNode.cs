@@ -55,5 +55,14 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
                 node.Reset();
             }
         }
+
+        public override void Stop()
+        {
+            index = 0;
+            foreach (BehaviourNode node in nodes)
+            {
+                node.Stop();
+            }
+        }
     }
 }

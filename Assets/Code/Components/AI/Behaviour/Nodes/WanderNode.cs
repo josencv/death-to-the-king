@@ -64,5 +64,11 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
                 transform.position.y,
                 transform.position.z + randomOffset.y);
         }
+
+        public override void Stop()
+        {
+            idleNode.Stop();
+            walkNode.Stop();
+        }
     }
 }

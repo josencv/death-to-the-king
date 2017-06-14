@@ -4,15 +4,34 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
 {
     public class ConditionNode : BehaviourNode
     {
-        private Field field;
+        private Condition condition;
+        private Field fieldToWatch;
 
-        public ConditionNode(BtContext context) : base(context)
+        public ConditionNode(BtContext context, Condition condition) : base(context)
         {
+            this.condition = condition;
+            this.fieldToWatch = context.StateFields[condition.FieldName];
         }
 
-        public override void Reset()
+        public override void Start()
         {
-            throw new NotImplementedException();
+            base.Start();
+        }
+
+        public override void Reset() { }
+
+        public override void Act()
+        {
+            base.Act();
+
+            if (condition.IsConditionMet(fieldToWatch.Value))
+            {
+                this.Succeed();
+            }
+            else
+            {
+                this.Fail();
+            }
         }
     }
 }
