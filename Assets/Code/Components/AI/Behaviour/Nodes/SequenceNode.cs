@@ -50,9 +50,9 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
         public override void Reset()
         {
             index = 0;
-            foreach (BehaviourNode ndoe in nodes)
+            foreach (BehaviourNode node in nodes)
             {
-                ndoe.Reset();
+                node.Reset();
             }
         }
 
