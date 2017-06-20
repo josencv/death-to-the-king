@@ -1,55 +1,54 @@
-﻿using UnityEngine;
-
-namespace Assets.Code.Components.AI.Routines
+﻿namespace Assets.Code.Components.AI.Behaviour.Nodes
 {
-    class RepeatRoutine : Routine
+    class RepeatNode : BehaviourNode
     {
-        private Routine routine;
+        private BehaviourNode node;
         private int times;
         private int counter;
 
         /// <summary>
         /// Initializes the repeat routine. 
         /// </summary>
-        /// <param name="routine">The routine to repeat</param>
+        /// <param name="node">The node to repeat</param>
         /// <param name="times">How many times should the routine be repeated. If not set irt will wun indefinitely until it fails.</param>
-        public RepeatRoutine(IComponent entity, Routine routine, int times = -1) : base(entity)
+        public RepeatNode(BehaviourTreeContext context, BehaviourNode node, int times = -1) : base(context)
         {
-            this.routine = routine;
+            this.node = node;
             this.times = times;
-            this.counter = 0;
+            counter = 0;
         }
 
         public override void Start()
         {
             counter++;
             base.Start();
-            this.routine.Start();
+            this.node.Start();
         }
 
         public override void Reset()
         {
             counter = 0;
+            node.Reset();
         }
 
         public override void Act()
         {
             base.Act();
 
-            if (routine.IsStopped)
+            if (node.IsStopped)
             {
-                routine.Start();
+                node.Start();
             }
-            else if (routine.HasFailed)
+            else if (node.HasFailed)
             {
                 this.Fail();
             }
-            else if (routine.HasSucceeded)
+            else if (node.HasSucceeded)
             {
                 if (times == -1 || counter < times)
                 {
                     counter++;
-                    routine.Restart();
+                    node.Restart();
                 }
                 else
                 {
@@ -58,8 +57,14 @@ namespace Assets.Code.Components.AI.Routines
             }
             else
             {
-                routine.Act();
+                node.Act();
             }
+        }
+
+        public override void Stop()
+        {
+            node.Stop();
+            base.Stop();
         }
     }
 }

@@ -1,14 +1,13 @@
 ﻿using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace Assets.Code.Components.AI.Routines
+namespace Assets.Code.Components.AI.Behaviour.Nodes
 {
-    class WanderRoutine : Routine
+    class WanderNode : BehaviourNode
     {
-        private IComponent entity;
-        private SequenceRoutine sequenceRoutine;
-        private WalkRoutine walkRoutine;
-        private IdleRoutine idleRoutine;
+        private SequenceNode sequenceNode;
+        private WalkNode walkNode;
+        private IdleNode idleNode;
         private Transform transform;
         private float wanderRadius;
 
@@ -17,44 +16,43 @@ namespace Assets.Code.Components.AI.Routines
         /// </summary>
         /// <param name="wanderRadius">The max possible radius to wander to from current position.</param>
         /// <param name="idleDuration">The iddle duration between movement in seconds.</param>
-        public WanderRoutine(IComponent entity, float wanderRadius = 1, float idleDuration = 3) : base(entity)
+        public WanderNode(BehaviourTreeContext context, float wanderRadius = 1, float idleDuration = 4) : base(context)
         {
             this.wanderRadius = wanderRadius;
-            this.entity = entity;
-            transform = entity.GetComponent<Transform>();
-            walkRoutine = new WalkRoutine(entity, GenerateDestination(wanderRadius));
-            idleRoutine = new IdleRoutine(entity, idleDuration);
-            sequenceRoutine = new SequenceRoutine(entity, new Routine[] { idleRoutine, walkRoutine });
+            transform = context.AI.GetComponent<Transform>();
+            walkNode = new WalkNode(context, GenerateDestination(wanderRadius));
+            idleNode = new IdleNode(context, idleDuration);
+            sequenceNode = new SequenceNode(context, new BehaviourNode[] { idleNode, walkNode });
         }
 
         public override void Start()
         {
-            sequenceRoutine.Start();
+            sequenceNode.Start();
             base.Start();
         }
 
         public override void Reset()
         {
-            sequenceRoutine.Reset();
-            walkRoutine.Destination = GenerateDestination(wanderRadius);
+            sequenceNode.Reset();
+            walkNode.Destination = GenerateDestination(wanderRadius);
         }
 
         public override void Act()
         {
-            sequenceRoutine.Act();
+            sequenceNode.Act();
             base.Act();
 
-            if (sequenceRoutine.HasFailed)
+            if (sequenceNode.HasFailed)
             {
                 this.Fail();
             }
-            else if (sequenceRoutine.HasSucceeded)
+            else if (sequenceNode.HasSucceeded)
             {
                 this.Succeed();
             }
             else
             {
-                sequenceRoutine.Act();
+                sequenceNode.Act();
             }
         }
 
@@ -65,6 +63,12 @@ namespace Assets.Code.Components.AI.Routines
                 transform.position.x + randomOffset.x,
                 transform.position.y,
                 transform.position.z + randomOffset.y);
+        }
+
+        public override void Stop()
+        {
+            idleNode.Stop();
+            walkNode.Stop();
         }
     }
 }

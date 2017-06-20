@@ -31,6 +31,11 @@ namespace Assets.Code.Components.Movement
             actions["Move"] = () => ApplyMovement(x, z);
         }
 
+        public void Stop()
+        {
+            actions["Move"] = () => ApplyMovement(0, 0);
+        }
+
         private void ApplyMovement(float x, float z)
         {
             if (!CanMove())

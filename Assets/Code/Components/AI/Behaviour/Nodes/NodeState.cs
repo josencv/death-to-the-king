@@ -1,6 +1,6 @@
-﻿namespace Assets.Code.Components.AI.Routines
+﻿namespace Assets.Code.Components.AI.Behaviour.Nodes
 {
-    public enum RoutineState
+    public enum NodeState
     {
         Stopped,
         Running,

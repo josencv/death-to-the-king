@@ -1,17 +1,17 @@
 ﻿using Assets.Code.Components.Movement;
 using UnityEngine;
 
-namespace Assets.Code.Components.AI.Routines
+namespace Assets.Code.Components.AI.Behaviour.Nodes
 {
-    class IdleRoutine : Routine
+    class IdleNode : BehaviourNode
     {
         private IMovable movement;
         private float idleDuration;
         private float currentTime;
 
-        public IdleRoutine(IComponent entity, float idleDuration) : base(entity)
+        public IdleNode(BehaviourTreeContext context, float idleDuration) : base(context)
         {
-            movement = entity.GetComponent<IMovable>();
+            movement = context.AI.GetComponent<IMovable>();
             this.idleDuration = idleDuration;
             currentTime = 0;
         }
