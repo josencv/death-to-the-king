@@ -3,9 +3,9 @@
     public class ApproachNode : BehaviourNode
     {
         private WalkNode walk;
-        private BtContext context;
+        private BehaviourTreeContext context;
 
-        public ApproachNode(BtContext context) : base(context)
+        public ApproachNode(BehaviourTreeContext context) : base(context)
         {
             this.context = context;
         }

@@ -9,7 +9,7 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
         Vector3 destination;
         IMovable movement;
 
-        public WalkNode(BtContext context, Vector3 destination) : base(context)
+        public WalkNode(BehaviourTreeContext context, Vector3 destination) : base(context)
         {
             this.destination = destination;
             this.movement = context.AI.GetComponent<IMovable>();

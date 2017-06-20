@@ -34,7 +34,6 @@ namespace Assets.Code.Components.AI
 
         private void Awake()
         {
-            playerOnsight = false;
             tree = new BehaviourTree(this);
             container.Inject(tree);
             tree.Initialize();

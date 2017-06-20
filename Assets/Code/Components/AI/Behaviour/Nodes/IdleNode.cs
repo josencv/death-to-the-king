@@ -9,7 +9,7 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
         private float idleDuration;
         private float currentTime;
 
-        public IdleNode(BtContext context, float idleDuration) : base(context)
+        public IdleNode(BehaviourTreeContext context, float idleDuration) : base(context)
         {
             movement = context.AI.GetComponent<IMovable>();
             this.idleDuration = idleDuration;
