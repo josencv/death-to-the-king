@@ -27,12 +27,14 @@ namespace Assets.Code.Components.AI.Behaviour
             // TODO: this should be built from a file... probably
             var playerInSight = new ConditionNode(context, new Condition(FieldType.Bool, Operator.True, RegisteredFieldNames.PlayerInSight, 1.0f));
             var approach = new ApproachNode(context);
-            var attack = new SequenceNode(context, new BehaviourNode[] { playerInSight, approach });
+            var attack = new AttackNode(context);
+            var attackSequence = new SequenceNode(context, new BehaviourNode[] { playerInSight, approach, attack });
+            var attackRepeat = new RepeatNode(context, attackSequence);
             var wander = new WanderNode(context);
-            var selector = new SelectorNode(context, new BehaviourNode[] { attack, wander });
-            var repeat = new RepeatNode(context, selector);
+            var selector = new SelectorNode(context, new BehaviourNode[] { attackRepeat, wander });
+            var rootRepeat = new RepeatNode(context, selector);
 
-            root = repeat;
+            root = rootRepeat;
         }
 
         private void RegisterStateFields()

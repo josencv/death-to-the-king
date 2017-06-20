@@ -27,7 +27,6 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
         public override void Act()
         {
             base.Act();
-            nodes[index].Act();
 
             if (nodes[index].HasSucceeded)
             {
@@ -45,6 +44,18 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
             {
                 this.Fail();
             }
+            else
+            {
+                nodes[index].Act();
+            }
+        }
+
+        public override void Stop()
+        {
+            foreach (BehaviourNode node in nodes)
+            {
+                node.Stop();
+            }
         }
 
         public override void Reset()
@@ -53,15 +64,6 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
             foreach (BehaviourNode ndoe in nodes)
             {
                 ndoe.Reset();
-            }
-        }
-
-        public override void Stop()
-        {
-            index = 0;
-            foreach (BehaviourNode node in nodes)
-            {
-                node.Stop();
             }
         }
     }

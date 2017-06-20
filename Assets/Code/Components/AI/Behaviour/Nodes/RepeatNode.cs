@@ -25,12 +25,6 @@
             this.node.Start();
         }
 
-        public override void Reset()
-        {
-            counter = 0;
-            node.Reset();
-        }
-
         public override void Act()
         {
             base.Act();
@@ -65,6 +59,12 @@
         {
             node.Stop();
             base.Stop();
+        }
+
+        public override void Reset()
+        {
+            counter = 0;
+            node.Reset();
         }
     }
 }

@@ -18,8 +18,6 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
             base.Start();
         }
 
-        public override void Reset() { }
-
         public override void Act()
         {
             base.Act();
@@ -33,5 +31,7 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
                 this.Fail();
             }
         }
+
+        public override void Reset() { }
     }
 }
