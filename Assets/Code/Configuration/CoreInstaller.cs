@@ -4,6 +4,7 @@ using Assets.Code.Components.Movement;
 using Assets.Code.Components.Weapon;
 using Assets.Code.Infrastructure.Input;
 using Assets.Code.Infrastructure.Sound;
+using Assets.Code.Shared;
 using System;
 using UnityEngine;
 using Zenject;
@@ -20,6 +21,7 @@ namespace Assets.Code.Configuration
             // General
 
             Container.Bind<GameManager>().AsSingle();
+            Container.Bind<WorldData>().AsSingle();
             Container.Bind<IInputManager>().To<InputManager>().AsSingle();
             Container.Bind<IGameInput>().To<XboxGameInput>().AsTransient();
             Container.Bind<ISoundManager>().To<SoundManager2D>().AsSingle();

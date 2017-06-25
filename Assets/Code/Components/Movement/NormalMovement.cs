@@ -19,7 +19,7 @@ namespace Assets.Code.Components.Movement
         private Animator animator;
 
         [Inject]
-        private void Inject(Rigidbody body, Animator animator, IWeapon weapon)
+        private void Inject(Rigidbody body, Animator animator, [InjectOptional] IWeapon weapon)
         {
             this.body = body;
             this.animator = animator;
@@ -29,6 +29,11 @@ namespace Assets.Code.Components.Movement
         public void Move(float x, float z)
         {
             actions["Move"] = () => ApplyMovement(x, z);
+        }
+
+        public void Stop()
+        {
+            actions["Move"] = () => ApplyMovement(0, 0);
         }
 
         private void ApplyMovement(float x, float z)

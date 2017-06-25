@@ -1,6 +1,5 @@
 ﻿using Assets.Code.Components.Movement;
 using Assets.Code.Components.Weapon;
-using Assets.Code.Constants;
 using Assets.Code.Infrastructure.Input;
 using Assets.Code.Infrastructure.Unity;
 using UnityEngine;
