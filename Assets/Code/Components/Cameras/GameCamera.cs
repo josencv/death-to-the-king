@@ -1,45 +1,54 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 public class GameCamera : MonoBehaviour
 {
-    public GameObject target;       //Public variable to store a reference to the player game object
-    public Vector3 startingOffset;         //Private variable to store the offset distance between the player and camera
+    public List<GameObject> targets = new List<GameObject>();       // Public variable to store a reference to the players
+    public Vector3 centerOffset;         // Private variable to store the offset distance between the center and camera
+
+    // Thresholds configuration
     public float smallFovDistance = 4f;
-    public float smallFov = 16f;
     public float bigFovDistance = 8f;
-    public float bigFov = 20f;
+
+    // FOV configuration
+    public float smallFov;
+    public float fovDifference = 8f;
+    public float bigFov;
+
+    // Operational variables
     public float distanceFromCenter;
     public bool isPullingLeash;
     public float damping = 1;
     public Camera gameCamera;
 
+    public void addTarget(GameObject gameObject)
+    {
+        targets.Add(gameObject);
+        centerOffset = transform.position - targetsCenter(targets);
+    }
+
     // TODO: make private what should be private 
-
-    //private Vector3 centerFrom(Transform[] elements)
-    //{
-    //    Vector3[] positions = elements.Select(item => item.position).ToArray<Vector3>;
-    //    return new Vector3(0, 0, 0);
-    //} 
-
     // Use this for initialization
     void Start()
     {
         gameCamera = GetComponent<Camera>();
         //Calculate and store the offset value by getting the distance between the player's position and camera's position.
-        transform.LookAt(target.transform);
-        startingOffset = transform.position - target.transform.position; // Need to center the camera view in the target, instead of only storing the offset.
+        //transform.LookAt(target.transform);
+        //Offset to the center: or "real" target
+        centerOffset = transform.position - targetsCenter(targets); // Need to center the camera view in the target, instead of only storing the offset.
 
         smallFovDistance = (Screen.height / 2.5f)/Screen.dpi;
         bigFovDistance = 2.5f * smallFovDistance;
-        Debug.Log("smallFovDistance: " + smallFovDistance);
-        Debug.Log("bigFovDistance: " + bigFovDistance);
+
+        smallFov = gameCamera.fieldOfView;
+        bigFov = smallFov + fovDifference;
     }
 
     void OnDrawGizmosSelected()
     {
-        Vector3 center = transform.position - startingOffset;
+        Vector3 center = transform.position - centerOffset;
 
         Gizmos.color = Color.red; // big area
         Gizmos.DrawWireSphere(center, bigFovDistance);
@@ -50,29 +59,33 @@ public class GameCamera : MonoBehaviour
         Gizmos.DrawLine(center, center + new Vector3(1, smallFovDistance, 0));
 
         Gizmos.color = Color.white; // target
-        Gizmos.DrawLine(center, target.transform.position);
+        targets.ForEach((element) => Gizmos.DrawLine(center, element.transform.position));
     }
-
-    //float calculateFovDistance(float multiplier)
-    //{
-    //    gameCamera.ViewportToWorldPoint()
-    //}
 
     void setFieldOfView(float fov)
     {
         gameCamera.fieldOfView = Mathf.Lerp(gameCamera.fieldOfView, fov, Time.deltaTime * damping);
     }
 
+    private Vector3 targetsCenter(List<GameObject> targets)
+    {
+        if (targets.Count == 0) return new Vector3(0, 0, 0);
+        if (targets.Count == 1) return targets[0].transform.position;
+
+        //Vector3[] positions = targets.Select(item => item.position).ToArray<Vector3>;
+        return new Vector3(0, 0, 0);
+    }
+
     // LateUpdate is called after Update each frame
     void LateUpdate()
     {
         // TODO:
-        // 1. change FOV when going from small to big
-        // 2. you cant move outside radius or screen
-        // 3. okay, follow target if you try to go outside radius
+        // 1. Change FOV when going from small to big -> need to calculate when to change it
+        // 2. You cant move outside radius or screen
+        // 3. Okay, follow target if you try to go outside radius
         // 4. Targets fight for camera dominance
-        Vector3 center = transform.position - startingOffset;
-        distanceFromCenter =  Vector3.Distance(center, target.transform.position);
+        Vector3 center = transform.position - centerOffset;
+        distanceFromCenter =  Vector3.Distance(center, targets[0].transform.position);
         if (distanceFromCenter < smallFovDistance) setFieldOfView(smallFov);
         if (smallFovDistance < distanceFromCenter && distanceFromCenter < bigFovDistance) setFieldOfView(bigFov);
         if (distanceFromCenter >= bigFovDistance) isPullingLeash = true;
@@ -95,7 +108,7 @@ public class GameCamera : MonoBehaviour
             transform.position = target.transform.position + tail;
 
             // The camera now follows the center
-            Vector3 desiredPosition = transform.position + startingOffset;
+            Vector3 desiredPosition = transform.position + centerOffset;
             Vector3 position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * damping);
             transform.position = position;
         }*/

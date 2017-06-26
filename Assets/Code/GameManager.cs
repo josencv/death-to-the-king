@@ -47,7 +47,7 @@ namespace Assets.Code
 
             Camera camera = Camera.main;
             GameCamera gameCamera = camera.GetComponent<GameCamera>();
-            gameCamera.target = characters[1].gameObject;
+            gameCamera.addTarget(characters[1].gameObject);
             worldData.AddPlayer(characters[1]);
 
         }
