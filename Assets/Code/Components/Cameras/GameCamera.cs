@@ -80,17 +80,33 @@ public class GameCamera : MonoBehaviour
     void LateUpdate()
     {
         // TODO:
-        // 1. Change FOV when going from small to big -> need to calculate when to change it
+        // 1. Change FOV when going from small to big -> ok know how to do it
+        // 1b. One player wont ever get zoomed out. Poor little thing, right?
         // 2. You cant move outside radius or screen
         // 3. Okay, follow target if you try to go outside radius
         // 4. Targets fight for camera dominance
         Vector3 center = transform.position - centerOffset;
         distanceFromCenter =  Vector3.Distance(center, targets[0].transform.position);
-        if (distanceFromCenter < smallFovDistance) setFieldOfView(smallFov);
-        if (smallFovDistance < distanceFromCenter && distanceFromCenter < bigFovDistance) setFieldOfView(bigFov);
-        if (distanceFromCenter >= bigFovDistance) isPullingLeash = true;
-        if (distanceFromCenter < bigFovDistance) isPullingLeash = false;
-           
+        //if (distanceFromCenter < smallFovDistance) setFieldOfView(smallFov);
+        //if (smallFovDistance < distanceFromCenter && distanceFromCenter < bigFovDistance) setFieldOfView(bigFov);
+
+        float leashLength = bigFovDistance;
+        if (targets.Count == 1) leashLength = smallFovDistance;
+        if (distanceFromCenter >= leashLength) isPullingLeash = true;
+        if (distanceFromCenter < leashLength) isPullingLeash = false;
+        
+        if (isPullingLeash)
+        {
+            Vector3 distanceOffset = targets[0].transform.position - center;
+            Debug.Log("Distance Offset" + distanceOffset);
+            Debug.Log("Center" + center);
+            Debug.Log("Camera Position" + transform.position);
+            Debug.Log("Target Position" + targets[0].transform.position);
+            // The camera now follows the center
+            Vector3 desiredPosition = transform.position + (centerOffset - distanceOffset);
+            Vector3 position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * damping);
+            transform.position = position;
+        }
 
 
         /* old code
