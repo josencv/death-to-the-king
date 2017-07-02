@@ -8,11 +8,11 @@ namespace Assets.Code.Components.AI.Behaviour
     {
         private BehaviourNode root;
         private DiContainer container;
-        private BtContext context;
+        private BehaviourTreeContext context;
 
         public BehaviourTree(AIController ai)
         {
-            context = new BtContext(ai);
+            context = new BehaviourTreeContext(ai);
             RegisterStateFields();
         }
 

@@ -7,7 +7,7 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
         private Condition condition;
         private Field fieldToWatch;
 
-        public ConditionNode(BtContext context, Condition condition) : base(context)
+        public ConditionNode(BehaviourTreeContext context, Condition condition) : base(context)
         {
             this.condition = condition;
             this.fieldToWatch = context.StateFields[condition.FieldName];

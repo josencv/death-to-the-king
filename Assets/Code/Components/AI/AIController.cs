@@ -14,8 +14,6 @@ namespace Assets.Code.Components.AI
         private BehaviourTree tree;
         private WorldData worldData;
 
-        private bool playerOnsight;
-
         [SerializeField]
         private float sightDistance;
         [SerializeField]
@@ -42,7 +40,6 @@ namespace Assets.Code.Components.AI
 
         private void Awake()
         {
-            playerOnsight = false;
             tree = new BehaviourTree(this);
             container.Inject(tree);
             tree.Initialize();

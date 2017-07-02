@@ -4,10 +4,10 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
 {
     public class AttackNode : BehaviourNode
     {
-        private BtContext context;
+        private BehaviourTreeContext context;
         private IWeapon weapon;
 
-        public AttackNode(BtContext context) : base(context)
+        public AttackNode(BehaviourTreeContext context) : base(context)
         {
             this.context = context;
         }

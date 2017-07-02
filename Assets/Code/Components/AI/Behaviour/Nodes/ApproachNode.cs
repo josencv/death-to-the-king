@@ -6,10 +6,10 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
     public class ApproachNode : BehaviourNode
     {
         private WalkNode walk;
-        private BtContext context;
+        private BehaviourTreeContext context;
         private float distanceThreshold;    /// The minimum distance between the entity and the target to consider successful the approach action
 
-        public ApproachNode(BtContext context) : base(context)
+        public ApproachNode(BehaviourTreeContext context) : base(context)
         {
             this.context = context;
         }

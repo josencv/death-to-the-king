@@ -16,7 +16,7 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
         /// </summary>
         /// <param name="wanderRadius">The max possible radius to wander to from current position.</param>
         /// <param name="idleDuration">The iddle duration between movement in seconds.</param>
-        public WanderNode(BtContext context, float wanderRadius = 1, float idleDuration = 4) : base(context)
+        public WanderNode(BehaviourTreeContext context, float wanderRadius = 1, float idleDuration = 4) : base(context)
         {
             this.wanderRadius = wanderRadius;
             transform = context.AI.GetComponent<Transform>();

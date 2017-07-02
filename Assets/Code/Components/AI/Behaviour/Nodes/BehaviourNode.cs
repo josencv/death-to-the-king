@@ -7,7 +7,7 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
         protected NodeState currentState;
         protected IBody body;
 
-        public BehaviourNode(BtContext context)
+        public BehaviourNode(BehaviourTreeContext context)
         {
             body = context.AI.GetComponent<IBody>();
             currentState = NodeState.Stopped;

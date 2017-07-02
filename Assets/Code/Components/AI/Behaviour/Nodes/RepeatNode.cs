@@ -11,7 +11,7 @@
         /// </summary>
         /// <param name="node">The node to repeat</param>
         /// <param name="times">How many times should the routine be repeated. If not set irt will wun indefinitely until it fails.</param>
-        public RepeatNode(BtContext context, BehaviourNode node, int times = -1) : base(context)
+        public RepeatNode(BehaviourTreeContext context, BehaviourNode node, int times = -1) : base(context)
         {
             this.node = node;
             this.times = times;

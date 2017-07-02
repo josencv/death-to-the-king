@@ -10,7 +10,7 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
         Vector3 destination;
         IMovable movement;
 
-        public WalkNode(BtContext context, Vector3 destination, float distanceThreshold = minimumDistanceThreshold) : base(context)
+        public WalkNode(BehaviourTreeContext context, Vector3 destination, float distanceThreshold = minimumDistanceThreshold) : base(context)
         {
             this.destination = destination;
             this.distanceThreshold = (minimumDistanceThreshold > distanceThreshold) ? minimumDistanceThreshold : distanceThreshold;

@@ -7,7 +7,7 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
         private BehaviourNode[] nodes;
         private int index;  // The current routine index
 
-        public SequenceNode(BtContext context, BehaviourNode[] routines) : base(context)
+        public SequenceNode(BehaviourTreeContext context, BehaviourNode[] routines) : base(context)
         {
             if (routines == null || routines.Length == 0)
             {
