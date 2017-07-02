@@ -5,9 +5,9 @@ using System.Linq;
 
 public class GameCamera : MonoBehaviour
 {
-    public List<GameObject> targets = new List<GameObject>();       // Public variable to store a reference to the players
+    public List<CameraTarget> targets = new List<CameraTarget>();       // Public variable to store a reference to the players
     public Vector3 centerOffset;         // Private variable to store the offset distance between the center and camera
-
+    public Vector3 center;
     // Thresholds configuration
     public float smallFovDistance = 4f;
     public float bigFovDistance = 8f;
@@ -25,8 +25,9 @@ public class GameCamera : MonoBehaviour
 
     public void addTarget(GameObject gameObject)
     {
-        targets.Add(gameObject);
-        centerOffset = transform.position - targetsCenter(targets);
+        targets.Add(new CameraTarget(gameObject));
+        center = getTargetsCenter();
+        centerOffset = transform.position - center;
     }
 
     // TODO: make private what should be private 
@@ -37,7 +38,7 @@ public class GameCamera : MonoBehaviour
         //Calculate and store the offset value by getting the distance between the player's position and camera's position.
         //transform.LookAt(target.transform);
         //Offset to the center: or "real" target
-        centerOffset = transform.position - targetsCenter(targets); // Need to center the camera view in the target, instead of only storing the offset.
+        centerOffset = transform.position - getTargetsCenter(); // Need to center the camera view in the target, instead of only storing the offset.
 
         smallFovDistance = (Screen.height / 2.5f)/Screen.dpi;
         bigFovDistance = 2.5f * smallFovDistance;
@@ -48,8 +49,6 @@ public class GameCamera : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        Vector3 center = transform.position - centerOffset;
-
         Gizmos.color = Color.red; // big area
         Gizmos.DrawWireSphere(center, bigFovDistance);
         Gizmos.DrawLine(center, center + new Vector3(bigFovDistance, 0, 0));
@@ -59,7 +58,7 @@ public class GameCamera : MonoBehaviour
         Gizmos.DrawLine(center, center + new Vector3(1, smallFovDistance, 0));
 
         Gizmos.color = Color.white; // target
-        targets.ForEach((element) => Gizmos.DrawLine(center, element.transform.position));
+        targets.ForEach((element) => Gizmos.DrawLine(center, element.getPosition()));
     }
 
     void setFieldOfView(float fov)
@@ -67,15 +66,21 @@ public class GameCamera : MonoBehaviour
         gameCamera.fieldOfView = Mathf.Lerp(gameCamera.fieldOfView, fov, Time.deltaTime * damping);
     }
 
-    private Vector3 targetsCenter(List<GameObject> targets)
+    private Vector3 getTargetsCenter()
     {
         if (targets.Count == 0) return new Vector3(0, 0, 0);
-        if (targets.Count == 1) return targets[0].transform.position;
+        if (targets.Count == 1) return targets[0].getPosition();
 
-        List<Vector3> positions = targets.Select(item => item.transform.position).ToList<Vector3>();
+        List<Vector3> positions = targets.Select(item => item.getPosition()).ToList<Vector3>();
         Vector3 sum = Vector3.zero;
         positions.ForEach(pos => sum += pos);
         return sum / positions.Count();
+    }
+
+    private Vector3 desiredPosition(float leashLength)
+    {
+        //targets.ForEach(target => target.isPullingLeash(leashLength))
+        //return false;
     }
 
     // LateUpdate is called after Update each frame
@@ -87,8 +92,8 @@ public class GameCamera : MonoBehaviour
         // 2. You cant move outside radius or screen
         // 3. Okay, follow target if you try to go outside radius: 1 player OK, more players is trickier
         // 4. Targets fight for camera dominance... this is many players. At least 2.
-        Vector3 center = transform.position - centerOffset; // not center, center of targets calculated earlier :c
-        distanceFromCenter =  Vector3.Distance(center, targets[0].transform.position);
+        
+        distanceFromCenter =  Vector3.Distance(center, targets[0].getPosition());
         //if (distanceFromCenter < smallFovDistance) setFieldOfView(smallFov);
         //if (smallFovDistance < distanceFromCenter && distanceFromCenter < bigFovDistance) setFieldOfView(bigFov);
 
@@ -99,10 +104,11 @@ public class GameCamera : MonoBehaviour
         
         if (isPullingLeash)
         {
-            Vector3 distanceOffset = targets[0].transform.position - center;
+            Vector3 distanceOffset = targets[0].getPosition() - center;
             Vector3 desiredPosition = transform.position + distanceOffset;
             Vector3 position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * damping);
             transform.position = position;
+
         }
     }
 }
