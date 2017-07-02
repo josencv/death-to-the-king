@@ -1,4 +1,6 @@
-﻿using Assets.Code.Infrastructure.Unity;
+﻿using Assets.Code.Components.Weapon;
+using Assets.Code.Constants;
+using Assets.Code.Infrastructure.Unity;
 using System;
 using UnityEngine;
 using Zenject;
@@ -101,6 +103,30 @@ namespace Assets.Code.Components.Body
             CheckKnockback(Time.deltaTime);
         }
 
+        private void OnTriggerEnter(Collider other)
+        {
+            IWeapon otherWeapon = GetWeaponFromCollider(other);
+
+            // Makes character BIG
+            //gameObject.transform.localScale = new Vector3(gameObject.transform.localScale.x * 1.1f, gameObject.transform.localScale.y * 1.1f, 0);
+
+            if (other.enabled && otherWeapon != null && otherWeapon.IsAttacking)
+            {
+                Vector3 direction = transform.position - otherWeapon.transform.position;
+                direction = new Vector3(direction.x, 0, direction.z);
+                this.Hit(otherWeapon.Damage, direction);
+            }
+        }
+
+        // This may be moved somewhere else in the future
+        private IWeapon GetWeaponFromCollider(Collider collider)
+        {
+            var body = collider.GetComponentInParent<IWeapon>();
+            body = body != null ? body : collider.GetComponent<IWeapon>();
+            return body;
+        }
+
         public bool IsDead { get { return isDead; } }
+        public bool IsInKnockback { get { return isHit; } }
     }
 }

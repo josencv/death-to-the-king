@@ -18,26 +18,26 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
             this.currentState = NodeState.Running;
         }
 
-        public virtual void Stop()
-        {
-            this.currentState = NodeState.Stopped;
-        }
-
-        public virtual void Restart()
-        {
-            this.Stop();
-            this.Reset();
-            this.Start();
-        }
-
-        public abstract void Reset();
-
         public virtual void Act()
         {
             if (body.IsDead)
             {
                 this.Fail();
             }
+        }
+
+        public virtual void Stop()
+        {
+            this.currentState = NodeState.Stopped;
+        }
+
+        public abstract void Reset();
+
+        public virtual void Restart()
+        {
+            this.Stop();
+            this.Reset();
+            this.Start();
         }
 
         public virtual void Succeed()

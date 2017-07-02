@@ -20,10 +20,16 @@ namespace Assets.Code.Components.AI
         private float fieldOfVision;
 
         /// <summary>
-        /// The eyes y axis position relative to the transform
+        /// Indicates a threshold inside which the target is detected regardless the vision logic.
         /// </summary>
         [SerializeField]
-        private float eyesRelativePosition;
+        private float detectionThreshold;
+
+        /// <summary>
+        /// The logic eyes GameObject transform
+        /// </summary>
+        [SerializeField]
+        private Transform eyesTransform;
 
         [Inject]
         public void Inject(DiContainer container, WorldData worldData)
@@ -48,8 +54,8 @@ namespace Assets.Code.Components.AI
         {
             CheckIfPlayerIsInSight();
             tree.Update();
-            Debug.DrawRay(this.transform.position + Vector3.up * eyesRelativePosition, Quaternion.Euler(0, -fieldOfVision, 0) * this.transform.forward * this.sightDistance, Color.red);
-            Debug.DrawRay(this.transform.position + Vector3.up * eyesRelativePosition, Quaternion.Euler(0, fieldOfVision, 0) * this.transform.forward * this.sightDistance, Color.red);
+            Debug.DrawRay(this.eyesTransform.position, Quaternion.Euler(0, -fieldOfVision, 0) * this.transform.forward * this.sightDistance, Color.red);
+            Debug.DrawRay(this.eyesTransform.position, Quaternion.Euler(0, fieldOfVision, 0) * this.transform.forward * this.sightDistance, Color.red);
         }
 
         /// <summary>
@@ -59,34 +65,64 @@ namespace Assets.Code.Components.AI
         {
             foreach (var player in worldData.Players)
             {
-                var eyesPosition = this.EyesPosition;
-                var vectorBetween = player.GetComponent<CapsuleCollider>().bounds.center - eyesPosition;
-                if (vectorBetween.magnitude <= this.SightDistance &&
-                    Vector3.Angle(this.transform.forward, vectorBetween) <= this.FieldOfVision)
+                // We use the center of the collider of the player to avoid raycasting to the feet of the player. An game object could be used to simplify the calculation.
+                var vectorBetween = player.GetComponent<CapsuleCollider>().bounds.center - eyesTransform.position;
+
+                if (IsTargetInsideDetectionThreshold(vectorBetween))
+                {
+                    SetTargetAsDetected(player);
+                    return;
+                }
+
+                if (IsTargetInFieldOfVision(vectorBetween))
                 {
                     RaycastHit hit;
-                    Ray ray = new Ray(eyesPosition, vectorBetween);
-                    Debug.DrawRay(eyesPosition, vectorBetween, Color.red);
+                    Ray ray = new Ray(eyesTransform.position, vectorBetween);
+                    Debug.DrawRay(eyesTransform.position, vectorBetween, Color.red);
 
                     // TODO: in the future the raycast should ignore some layers
                     // TODO: add logic to choose target if more than one player is in sight
                     if (Physics.Raycast(ray, out hit, this.SightDistance) &&
                         hit.collider.tag == Tags.Player)
                     {
-                        tree.SetBoolField(RegisteredFieldNames.PlayerInSight, true);
-                        tree.SetTarget(hit.collider.GetComponent<Character>());
+                        SetTargetAsDetected(hit.collider.GetComponent<Character>());
                         return;
                     }
                 }
             }
 
+            UnsetTarget();
+        }
+
+        /// <summary>
+        /// Returns true if the target is inside the vision area regardless of obstacles blocking the sight line
+        /// </summary>
+        /// <param name="vectorBetween">The vector between the entity and the target</param>
+        /// <returns>True if the target</returns>
+        private bool IsTargetInFieldOfVision(Vector3 vectorBetween)
+        {
+            return vectorBetween.magnitude <= this.SightDistance &&
+                    Vector3.Angle(this.transform.forward, vectorBetween) <= this.FieldOfVision;
+        }
+
+        private bool IsTargetInsideDetectionThreshold(Vector3 vectorBetween)
+        {
+            return vectorBetween.magnitude <= detectionThreshold;
+        }
+
+        private void SetTargetAsDetected(Character player)
+        {
+            tree.SetBoolField(RegisteredFieldNames.PlayerInSight, true);
+            tree.SetTarget(player);
+        }
+
+        private void UnsetTarget()
+        {
             tree.SetBoolField(RegisteredFieldNames.PlayerInSight, false);
             tree.SetTarget(null);
         }
 
         public float SightDistance { get { return sightDistance; } }
         public float FieldOfVision { get { return fieldOfVision; } }
-        public float EyesRelativePosition { get { return eyesRelativePosition; } }
-        public Vector3 EyesPosition { get { return this.transform.position + Vector3.up * eyesRelativePosition; } }
     }
 }

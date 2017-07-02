@@ -31,15 +31,8 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
             base.Start();
         }
 
-        public override void Reset()
-        {
-            sequenceNode.Reset();
-            walkNode.Destination = GenerateDestination(wanderRadius);
-        }
-
         public override void Act()
         {
-            sequenceNode.Act();
             base.Act();
 
             if (sequenceNode.HasFailed)
@@ -56,6 +49,19 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
             }
         }
 
+        public override void Stop()
+        {
+            idleNode.Stop();
+            walkNode.Stop();
+        }
+
+        public override void Reset()
+        {
+            sequenceNode.Reset();
+            walkNode.Reset();
+            walkNode.UpdateDestination(GenerateDestination(wanderRadius));
+        }
+
         private Vector3 GenerateDestination(float radius)
         {
             Vector2 randomOffset = Random.insideUnitCircle.normalized * wanderRadius;
@@ -63,12 +69,6 @@ namespace Assets.Code.Components.AI.Behaviour.Nodes
                 transform.position.x + randomOffset.x,
                 transform.position.y,
                 transform.position.z + randomOffset.y);
-        }
-
-        public override void Stop()
-        {
-            idleNode.Stop();
-            walkNode.Stop();
         }
     }
 }

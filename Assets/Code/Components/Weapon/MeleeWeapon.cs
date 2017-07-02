@@ -1,4 +1,5 @@
 ﻿using Assets.Code.Components.Body;
+using Assets.Code.Components.Movement;
 using Assets.Code.Constants;
 using Assets.Code.Infrastructure.Unity;
 using UnityEngine;
@@ -9,6 +10,7 @@ namespace Assets.Code.Components.Weapon
     public class MeleeWeapon : MonoBehaviourExtension, IWeapon
     {
         private Animator animator;
+        private IMovable movement;
 
         [SerializeField]
         private Collider weaponCollider;
@@ -17,17 +19,22 @@ namespace Assets.Code.Components.Weapon
         private float baseDamage;
         private bool isAttacking;
         private bool hitboxActive;
+        private float attackRange;
+
+        public event AttackFinishedHandler AttackFinished;
 
         [Inject]
-        private void Inject(Animator animator)
+        private void Inject(Animator animator, IMovable movement)
         {
             this.animator = animator;
+            this.movement = movement;
         }
 
         private void Awake()
         {
             isAttacking = false;
             hitboxActive = false;
+            attackRange = 0.3f; // TODO: maybe this distance can be calculated based in the weapon collider
         }
 
         private void Start()
@@ -37,13 +44,24 @@ namespace Assets.Code.Components.Weapon
 
         public void Attack()
         {
+            if (!CanAttack())
+            {
+                return;
+            }
+
             isAttacking = true;
+            movement.Stop();
             animator.SetTrigger(AnimatorParameters.Attack);
         }
 
         public void Stop()
         {
             isAttacking = false;
+            DisableHitbox();
+            if (AttackFinished != null)
+            {
+                AttackFinished.Invoke();
+            }
         }
 
         public void EnableHitbox()
@@ -74,19 +92,12 @@ namespace Assets.Code.Components.Weapon
             get { return hitboxActive; }
         }
 
-        private void OnTriggerEnter(Collider other)
+        public bool CanAttack()
         {
-            IBody otherBody = other.GetComponent<IBody>();
-
-            // Makes character BIG
-            //gameObject.transform.localScale = new Vector3(gameObject.transform.localScale.x * 1.1f, gameObject.transform.localScale.y * 1.1f, 0);
-
-            if (otherBody != null && otherBody.tag == Tags.Enemy)
-            {
-                Vector3 direction = otherBody.transform.position - transform.position;
-                direction = new Vector3(direction.x, 0, direction.z);
-                otherBody.Hit(this.baseDamage, direction);
-            }
+            return !isAttacking;
         }
+
+        public float AttackRange { get { return attackRange; } }
+        public float Damage { get { return baseDamage; } }
     }
 }

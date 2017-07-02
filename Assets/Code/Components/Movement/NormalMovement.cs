@@ -1,4 +1,5 @@
-﻿using Assets.Code.Components.Weapon;
+﻿using Assets.Code.Components.Body;
+using Assets.Code.Components.Weapon;
 using Assets.Code.Constants;
 using Assets.Code.Infrastructure.Unity;
 using UnityEngine;
@@ -15,20 +16,25 @@ namespace Assets.Code.Components.Movement
         private float speed;
 
         private IWeapon weapon;
+        private IBody logicalBody;
         private Rigidbody body;
         private Animator animator;
 
         [Inject]
-        private void Inject(Rigidbody body, Animator animator, [InjectOptional] IWeapon weapon)
+        private void Inject(Rigidbody body, Animator animator, [InjectOptional] IBody logicalBody, [InjectOptional] IWeapon weapon)
         {
             this.body = body;
             this.animator = animator;
             this.weapon = weapon;
+            this.logicalBody = logicalBody;
         }
 
         public void Move(float x, float z)
         {
-            actions["Move"] = () => ApplyMovement(x, z);
+            if (CanMove())
+            {
+               actions["Move"] = () => ApplyMovement(x, z);
+            }
         }
 
         public void Stop()
@@ -38,12 +44,6 @@ namespace Assets.Code.Components.Movement
 
         private void ApplyMovement(float x, float z)
         {
-            if (!CanMove())
-            {
-                body.velocity = Vector3.zero;
-                return;
-            }
-
             Vector3 movement = Vector3.ClampMagnitude(new Vector3(x, 0, z), 1);
             body.velocity = movement * speed;
             if (movement != Vector3.zero)
@@ -59,7 +59,8 @@ namespace Assets.Code.Components.Movement
 
         private bool CanMove()
         {
-            return weapon == null || !weapon.IsAttacking;
+            return (weapon == null || !weapon.IsAttacking) &&
+                   (logicalBody == null || !logicalBody.IsInKnockback);
         }
 
         private void FixedUpdate()
