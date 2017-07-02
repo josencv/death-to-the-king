@@ -85,7 +85,7 @@ public class GameCamera : MonoBehaviour
         // 2. You cant move outside radius or screen
         // 3. Okay, follow target if you try to go outside radius
         // 4. Targets fight for camera dominance
-        Vector3 center = transform.position - centerOffset;
+        Vector3 center = transform.position - centerOffset; // not center, center of targets calculated earlier :c
         distanceFromCenter =  Vector3.Distance(center, targets[0].transform.position);
         //if (distanceFromCenter < smallFovDistance) setFieldOfView(smallFov);
         //if (smallFovDistance < distanceFromCenter && distanceFromCenter < bigFovDistance) setFieldOfView(bigFov);
@@ -103,7 +103,7 @@ public class GameCamera : MonoBehaviour
             Debug.Log("Camera Position" + transform.position);
             Debug.Log("Target Position" + targets[0].transform.position);
             // The camera now follows the center
-            Vector3 desiredPosition = transform.position + (centerOffset - distanceOffset);
+            Vector3 desiredPosition = transform.position + distanceOffset;
             Vector3 position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * damping);
             transform.position = position;
         }
