@@ -72,8 +72,10 @@ public class GameCamera : MonoBehaviour
         if (targets.Count == 0) return new Vector3(0, 0, 0);
         if (targets.Count == 1) return targets[0].transform.position;
 
-        //Vector3[] positions = targets.Select(item => item.position).ToArray<Vector3>;
-        return new Vector3(0, 0, 0);
+        List<Vector3> positions = targets.Select(item => item.transform.position).ToList<Vector3>();
+        Vector3 sum = Vector3.zero;
+        positions.ForEach(pos => sum += pos);
+        return sum / positions.Count();
     }
 
     // LateUpdate is called after Update each frame
@@ -83,8 +85,8 @@ public class GameCamera : MonoBehaviour
         // 1. Change FOV when going from small to big -> ok know how to do it
         // 1b. One player wont ever get zoomed out. Poor little thing, right?
         // 2. You cant move outside radius or screen
-        // 3. Okay, follow target if you try to go outside radius
-        // 4. Targets fight for camera dominance
+        // 3. Okay, follow target if you try to go outside radius: 1 player OK, more players is trickier
+        // 4. Targets fight for camera dominance... this is many players. At least 2.
         Vector3 center = transform.position - centerOffset; // not center, center of targets calculated earlier :c
         distanceFromCenter =  Vector3.Distance(center, targets[0].transform.position);
         //if (distanceFromCenter < smallFovDistance) setFieldOfView(smallFov);
@@ -98,35 +100,9 @@ public class GameCamera : MonoBehaviour
         if (isPullingLeash)
         {
             Vector3 distanceOffset = targets[0].transform.position - center;
-            Debug.Log("Distance Offset" + distanceOffset);
-            Debug.Log("Center" + center);
-            Debug.Log("Camera Position" + transform.position);
-            Debug.Log("Target Position" + targets[0].transform.position);
-            // The camera now follows the center
             Vector3 desiredPosition = transform.position + distanceOffset;
             Vector3 position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * damping);
             transform.position = position;
         }
-
-
-        /* old code
-
-        //bool isIntersecting = boundaries.Intersects(target.GetComponent<Collider>().bounds);
-        if (isPullingLeash)
-        {
-            //// Put the center behind the character leashing
-            //if (boundaries.center.x < target.transform.position.x) boundaries.center = target.transform.position - new Vector3(leashLength, 0, 0);
-            //if (boundaries.center.x > target.transform.position.x) boundaries.center = target.transform.position + new Vector3(leashLength, 0, 0);
-            //if (boundaries.center.z < target.transform.position.z) boundaries.center = target.transform.position - new Vector3(0, 0, leashLength);
-            //if (boundaries.center.z > target.transform.position.z) boundaries.center = target.transform.position + new Vector3(0, 0, leashLength);
-
-            Vector3 tail = target.transform.forward * -1 * bigFovDistance; // only works (and badly at that) for one target
-            transform.position = target.transform.position + tail;
-
-            // The camera now follows the center
-            Vector3 desiredPosition = transform.position + centerOffset;
-            Vector3 position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * damping);
-            transform.position = position;
-        }*/
     }
 }
