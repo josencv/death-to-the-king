@@ -44,6 +44,11 @@ namespace Assets.Code.Components.Weapon
 
         public void Attack()
         {
+            if (!CanAttack())
+            {
+                return;
+            }
+
             isAttacking = true;
             movement.Stop();
             animator.SetTrigger(AnimatorParameters.Attack);
@@ -52,6 +57,7 @@ namespace Assets.Code.Components.Weapon
         public void Stop()
         {
             isAttacking = false;
+            DisableHitbox();
             if (AttackFinished != null)
             {
                 AttackFinished.Invoke();
@@ -84,6 +90,11 @@ namespace Assets.Code.Components.Weapon
         public bool IsHitboxEnabled
         {
             get { return hitboxActive; }
+        }
+
+        public bool CanAttack()
+        {
+            return !isAttacking;
         }
 
         public float AttackRange { get { return attackRange; } }
