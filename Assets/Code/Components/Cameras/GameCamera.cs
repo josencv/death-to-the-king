@@ -77,38 +77,39 @@ public class GameCamera : MonoBehaviour
         return sum / positions.Count();
     }
 
-    private Vector3 desiredPosition(float leashLength)
-    {
-        //targets.ForEach(target => target.isPullingLeash(leashLength))
-        //return false;
-    }
-
     // LateUpdate is called after Update each frame
     void LateUpdate()
     {
-        // TODO:
+        // BEGIN TODO:
         // 1. Change FOV when going from small to big -> ok know how to do it
         // 1b. One player wont ever get zoomed out. Poor little thing, right?
         // 2. You cant move outside radius or screen
         // 3. Okay, follow target if you try to go outside radius: 1 player OK, more players is trickier
         // 4. Targets fight for camera dominance... this is many players. At least 2.
+        // END TODO
         
-        distanceFromCenter =  Vector3.Distance(center, targets[0].getPosition());
         //if (distanceFromCenter < smallFovDistance) setFieldOfView(smallFov);
         //if (smallFovDistance < distanceFromCenter && distanceFromCenter < bigFovDistance) setFieldOfView(bigFov);
 
-        float leashLength = bigFovDistance;
-        if (targets.Count == 1) leashLength = smallFovDistance;
-        if (distanceFromCenter >= leashLength) isPullingLeash = true;
-        if (distanceFromCenter < leashLength) isPullingLeash = false;
-        
-        if (isPullingLeash)
+        float leashLength = smallFovDistance;
+        if (targets.Any(target => target.isPullingLeash(center, leashLength)))
         {
-            Vector3 distanceOffset = targets[0].getPosition() - center;
+            // where to go
+            List<CameraTarget> pullingTargets = targets.Where(target => target.isPullingLeash(center, leashLength)).ToList();
+            Vector3 distanceOffset = Vector3.zero;
+            if (pullingTargets.Count == 1) { distanceOffset = pullingTargets[0].getPosition() - center; }
+            else if (pullingTargets.Count > 1) { distanceOffset = pullingTargets[1].getPosition() - center; }
             Vector3 desiredPosition = transform.position + distanceOffset;
-            Vector3 position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * damping);
-            transform.position = position;
 
+            // move camera
+            Vector3 position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * damping);
+            center = Vector3.Lerp(center, center + distanceOffset, Time.deltaTime * damping);
+            transform.position = position;
         }
+
+
+        //if (distanceFromCenter >= leashLength) isPullingLeash = true;
+        //if (distanceFromCenter < leashLength) isPullingLeash = false;
+
     }
 }

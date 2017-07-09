@@ -17,13 +17,9 @@ public class CameraTarget : ScriptableObject
         return this.gameObject.transform.position;
     }
 
-    public void setDistanceFromCenter(Vector3 center)
+    public bool isPullingLeash(Vector3 center, float leashLength)
     {
         distanceFromCenter = Vector3.Distance(center, getPosition());
-    }
-
-    public bool isPullingLeash(float leashLength)
-    {
         if (distanceFromCenter >= leashLength) return true;
         return false;
     }
