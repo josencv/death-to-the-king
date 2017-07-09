@@ -18,8 +18,7 @@ public class GameCamera : MonoBehaviour
     public float bigFov;
 
     // Operational variables
-    public float distanceFromCenter;
-    public bool isPullingLeash;
+    public float leashLength;
     public float damping = 1;
     public Camera gameCamera;
 
@@ -45,6 +44,8 @@ public class GameCamera : MonoBehaviour
 
         smallFov = gameCamera.fieldOfView;
         bigFov = smallFov + fovDifference;
+
+        leashLength = smallFovDistance;
     }
 
     void OnDrawGizmosSelected()
@@ -77,6 +78,16 @@ public class GameCamera : MonoBehaviour
         return sum / positions.Count();
     }
 
+    private void useFov(float fov, float distance)
+    {
+        leashLength = bigFovDistance;
+        setFieldOfView(bigFov);
+    }
+
+    private void useBigFov() { useFov(bigFov, bigFovDistance); }
+    private void useSmallFov() { useFov(smallFov, smallFovDistance); }
+
+
     // LateUpdate is called after Update each frame
     void LateUpdate()
     {
@@ -91,20 +102,27 @@ public class GameCamera : MonoBehaviour
         //if (distanceFromCenter < smallFovDistance) setFieldOfView(smallFov);
         //if (smallFovDistance < distanceFromCenter && distanceFromCenter < bigFovDistance) setFieldOfView(bigFov);
 
-        float leashLength = smallFovDistance;
         if (targets.Any(target => target.isPullingLeash(center, leashLength)))
         {
             // where to go
             List<CameraTarget> pullingTargets = targets.Where(target => target.isPullingLeash(center, leashLength)).ToList();
             Vector3 distanceOffset = Vector3.zero;
             if (pullingTargets.Count == 1) { distanceOffset = pullingTargets[0].getPosition() - center; }
-            else if (pullingTargets.Count > 1) { distanceOffset = pullingTargets[1].getPosition() - center; }
+            else if (pullingTargets.Count > 1) {
+                if (leashLength == smallFovDistance)
+                {
+                    useBigFov();
+                    return;
+                }
+                distanceOffset = pullingTargets[1].getPosition() - center;
+            }
             Vector3 desiredPosition = transform.position + distanceOffset;
 
             // move camera
-            Vector3 position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * damping);
             center = Vector3.Lerp(center, center + distanceOffset, Time.deltaTime * damping);
-            transform.position = position;
+            transform.position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * damping);
+        } else if (leashLength == bigFovDistance) {
+            if (!targets.Any(target => target.isPullingLeash(center, smallFovDistance))) useSmallFov();
         }
 
 
