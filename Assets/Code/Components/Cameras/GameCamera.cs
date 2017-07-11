@@ -22,6 +22,10 @@ public class GameCamera : MonoBehaviour
     public float damping = 1;
     public Camera gameCamera;
 
+    private bool isChangingFov = false;
+    private float targetFov;
+
+
     public void addTarget(GameObject gameObject)
     {
         targets.Add(new CameraTarget(gameObject));
@@ -62,9 +66,12 @@ public class GameCamera : MonoBehaviour
         targets.ForEach((element) => Gizmos.DrawLine(center, element.getPosition()));
     }
 
-    void setFieldOfView(float fov)
+    private void setFieldOfView(float fov)
     {
-        gameCamera.fieldOfView = Mathf.Lerp(gameCamera.fieldOfView, fov, Time.deltaTime * damping);
+        // ignore this frame or not ?
+        //gameCamera.fieldOfView = Mathf.Lerp(gameCamera.fieldOfView, fov, Time.deltaTime * damping);
+        isChangingFov = true;
+        targetFov = fov;
     }
 
     private Vector3 getTargetsCenter()
@@ -80,8 +87,8 @@ public class GameCamera : MonoBehaviour
 
     private void useFov(float fov, float distance)
     {
-        leashLength = bigFovDistance;
-        setFieldOfView(bigFov);
+        leashLength = distance;
+        setFieldOfView(fov);
     }
 
     private void useBigFov() { useFov(bigFov, bigFovDistance); }
@@ -98,9 +105,19 @@ public class GameCamera : MonoBehaviour
         // 3. Okay, follow target if you try to go outside radius: 1 player OK, more players is trickier
         // 4. Targets fight for camera dominance... this is many players. At least 2.
         // END TODO
-        
-        //if (distanceFromCenter < smallFovDistance) setFieldOfView(smallFov);
-        //if (smallFovDistance < distanceFromCenter && distanceFromCenter < bigFovDistance) setFieldOfView(bigFov);
+               
+        // Change the FOV smoothly
+        if (isChangingFov)
+        {
+            if (gameCamera.fieldOfView != targetFov)
+            {
+                gameCamera.fieldOfView = Mathf.Lerp(gameCamera.fieldOfView, targetFov, Time.deltaTime * damping);
+            }
+            else
+            {
+                isChangingFov = false;
+            }
+        }
 
         if (targets.Any(target => target.isPullingLeash(center, leashLength)))
         {
@@ -109,9 +126,12 @@ public class GameCamera : MonoBehaviour
             Vector3 distanceOffset = Vector3.zero;
             if (pullingTargets.Count == 1) { distanceOffset = pullingTargets[0].getPosition() - center; }
             else if (pullingTargets.Count > 1) {
+                // TODO: check that players are moving farther away between each other
+                // use player's distance instead of leash to change FOV.
                 if (leashLength == smallFovDistance)
                 {
                     useBigFov();
+                    gameCamera.fieldOfView = Mathf.Lerp(gameCamera.fieldOfView, bigFov, Time.deltaTime * damping);
                     return;
                 }
                 distanceOffset = pullingTargets[1].getPosition() - center;
